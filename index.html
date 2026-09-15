@@ -1,0 +1,1884 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-gov-dynamic-subset.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
+<title>디지털교육 준비도 대시보드</title>
+<style>
+  :root{
+    color-scheme: light;
+    /* 디자인 B · KRDS secondary(네이비) 계열 */
+    --navy:#063a74;
+    --navy-2:#1c589c;
+    --navy-banner:#052b57;
+    --green:#3fa654;
+
+    --bg-page:#f4f5f6;
+    --bg-surface:#ffffff;
+    --bg-surface-2:#eef0f2;
+    --border:#cdd1d5;
+    --border-strong:#b1b8be;
+    --text-primary:#1e2124;
+    --text-secondary:#464c53;
+    --text-muted:#6d7882;
+    --accent:#1c589c;
+    --accent-dark:#063a74;
+    --accent-weak:#e3e9f1;
+    --accent-tint:#4a7fb5;
+    --accent-line:#063a74;
+    --good:#228738;
+    --good-weak:#e5f1e7;
+    --warn:#9e6a00;
+    --warn-weak:#f6edda;
+    --crit:#de3412;
+    --crit-weak:#fbe6e1;
+    --grid:#cdd1d5;
+    --shadow:none;
+    --font-ui:'PretendardGOV Variable','Pretendard Variable','Pretendard',system-ui,-apple-system,'Malgun Gothic',sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --cluster-a:#063a74; /* 네이비 */
+    --cluster-b:#5a3d9e; /* 보라 */
+    --cluster-c:#1f7a35; /* 녹 */
+    --cluster-d:#de3412; /* KRDS 위험 */
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg-page);
+    color:var(--text-primary);
+    font-family:var(--font-ui);
+    font-size:14px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-weak);}
+  button{font-family:inherit;}
+  table{border-collapse:collapse;}
+
+  /* ---------- 공식 배너 ---------- */
+  .gov-banner{
+    background:var(--navy-banner); color:#cdd8e6;
+    font-size:12.5px; line-height:1.5;
+  }
+  .gov-banner .inner{
+    min-width:1280px; max-width:1600px; margin:0 auto; padding:5px 20px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .gov-banner b{color:#fff; font-weight:600;}
+
+  /* ---------- 마스트헤드 ---------- */
+  .masthead{
+    background:var(--navy); border-bottom:3px solid var(--green);
+  }
+  .masthead .inner{
+    min-width:1280px; max-width:1600px; margin:0 auto; padding:13px 20px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .masthead .logo{
+    display:flex; align-items:center; gap:9px;
+    color:#fff; font-size:17px; font-weight:700; letter-spacing:-.01em;
+  }
+  .masthead .logo svg{width:20px; height:20px; display:block; color:#fff;}
+  .masthead .logo .sys{
+    font-size:13px; font-weight:500; color:#b9c8da; padding-left:11px; margin-left:2px;
+    border-left:1px solid rgba(255,255,255,.28);
+  }
+  .masthead .mh-right{
+    margin-left:auto; display:flex; align-items:center; gap:14px;
+    font-size:12.5px; color:#b9c8da;
+  }
+  .masthead .mh-right .mh-user{color:#fff; font-weight:600;}
+
+  .app{
+    min-width:1280px;
+    max-width:1600px;
+    margin:0 auto;
+    padding:16px 20px 24px;
+  }
+
+  /* ---------- 페이지 머리글 (제목 + 네이비 밑줄) ---------- */
+  .pagehead{
+    margin:0 0 14px; padding-bottom:7px; border-bottom:2px solid var(--navy);
+    background:#fff;
+  }
+  .pagehead h1{font-size:18px; margin:0 0 3px; font-weight:700; letter-spacing:-.01em;}
+  .pagehead p{margin:0; font-size:13px; color:var(--text-secondary);}
+  .pagehead p .note-inline{margin-left:4px;}
+
+  /* ---------- Screen tabs ---------- */
+  .tabs{display:flex; gap:0; margin-bottom:12px; border-bottom:1px solid var(--border);}
+  .tab{
+    appearance:none; cursor:pointer;
+    background:var(--bg-surface-2); border:1px solid var(--border); border-bottom:none;
+    padding:8px 18px; border-radius:2px 2px 0 0; font-size:14px; font-weight:700;
+    color:var(--text-secondary); white-space:nowrap; margin-right:-1px;
+    display:flex; align-items:center; gap:7px;
+  }
+  .tab .num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:17px;height:17px;border-radius:2px;
+    background:var(--border-strong); color:#fff; font-size:10.5px; font-weight:700;
+    font-family:var(--font-mono);
+  }
+  .tab.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .tab.active .num{background:rgba(255,255,255,.24); color:#fff;}
+  .tab:not(.active):hover{background:#e4e7ea; color:var(--text-primary);}
+
+  /* ---------- Filter bar ---------- */
+  .filterbar{
+    display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap;
+    padding:10px 12px; background:var(--bg-surface); border:1px solid var(--border); border-radius:0;
+    margin-bottom:12px;
+  }
+  .fgroup{display:flex; flex-direction:column; gap:3px;}
+  .fgroup label{font-size:12px; font-weight:700; color:var(--text-secondary);}
+  .fgroup select{
+    appearance:none;
+    font-family:inherit; font-size:13.5px; font-weight:500; color:var(--text-primary);
+    background:var(--bg-surface) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M0 0L5 6L10 0Z" fill="%23464c53"/></svg>') no-repeat right 10px center;
+    border:1px solid var(--border-strong); border-radius:2px;
+    padding:7px 28px 7px 9px; min-width:108px; cursor:pointer;
+  }
+  .fgroup select:hover{border-color:var(--navy-2);}
+  .fgroup select:focus-visible, button:focus-visible, .tab:focus-visible, .school-row:focus-visible{
+    outline:2px solid var(--navy-2); outline-offset:1px;
+  }
+  .fspacer{flex:1;}
+  .fnote{font-size:12px; color:var(--text-muted); margin-right:2px;}
+  .btn-reset, .icon-reset{
+    display:flex; align-items:center; justify-content:center;
+    width:32px; height:32px; flex:none;
+    border:1px solid var(--border-strong); background:var(--bg-surface); color:var(--text-secondary);
+    border-radius:2px; cursor:pointer; margin-left:auto;
+  }
+  .icon-reset svg{width:15px; height:15px; display:block;}
+  .btn-reset:hover, .icon-reset:hover{border-color:var(--navy); color:var(--navy);}
+  .btn-reset:active, .icon-reset:active{background:var(--accent-weak);}
+
+  /* ---------- 지표 스트립 (셀 구분선·아이콘·색띠 없음) ---------- */
+  .kpirow{
+    display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:0;
+    background:var(--bg-surface); border:1px solid var(--border);
+    border-top:2px solid var(--navy);
+    margin-bottom:12px;
+  }
+  .kpi{
+    background:transparent; border:none; border-radius:0;
+    padding:10px 16px; display:flex; flex-direction:column; gap:2px; min-width:0;
+  }
+  .kpi .klabel{font-size:13px; font-weight:700; color:var(--text-secondary);}
+  .kpi .kval{
+    font-size:24px; font-weight:700; letter-spacing:-.4px; color:var(--navy);
+    font-family:var(--font-mono); font-variant-numeric:tabular-nums;
+    display:flex; align-items:baseline; gap:3px;
+  }
+  .kpi .kval .unit{font-size:13px; font-weight:500; color:var(--text-secondary); font-family:var(--font-ui);}
+  .kpi.tone-good .kval{color:var(--good);}
+  .kpi.tone-warn .kval{color:var(--warn);}
+  .kpi.tone-crit .kval{color:var(--crit);}
+  .kpi .ksub{font-size:12px; color:var(--text-muted);}
+  .kpi .ksub .hi{color:var(--text-secondary); font-weight:700;}
+
+  /* 화면2 상단: 유형별 카드 4분할 */
+  .kpirow.type-cards{
+    background:transparent; border:none; border-top:none;
+    display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  }
+  .kpirow.type-cards .kpi{
+    background:var(--bg-surface); border:1px solid var(--border); border-top-width:2px;
+    padding:10px 13px 11px; cursor:pointer; gap:3px;
+  }
+  .kpirow.type-cards .kpi:hover{ border-color:var(--navy-2); }
+  .kpirow.type-cards .kpi.on{ background:var(--accent-weak); border-color:var(--navy); }
+  .kpirow.type-cards .kpi .kval{ font-size:22px; }
+  .kpirow.type-cards .kpi .ktrait{ font-size:12px; color:var(--text-secondary); line-height:1.45; }
+
+  /* ---------- Grid / Panels ---------- */
+  .row{display:grid; gap:12px; margin-bottom:12px;}
+  .row.r-64{grid-template-columns:6fr 4fr;}
+  .row.r-55{grid-template-columns:5fr 5fr;}
+  .row.r-46{grid-template-columns:4fr 6fr;}
+
+  #s2-area1{ height:352px; }
+  #s2-area2{ height:250px; grid-template-columns:1fr; }
+
+  .row.s1-top{ grid-template-columns:3.6fr 8.2fr; height:400px; }
+  .col-stack{ display:flex; flex-direction:column; gap:12px; min-height:0; }
+  .col-stack > .panel{ flex:1; min-height:0; }
+  #s1-bottom{ height:330px; margin-bottom:12px; }
+
+  .donut-wrap{ display:flex; align-items:center; gap:14px; flex:1; min-height:0; }
+  .donut-legend{ display:flex; flex-direction:column; gap:6px; font-size:12.5px; color:var(--text-secondary); flex:1; min-width:0; }
+  .donut-legend .dl-row{ display:flex; align-items:center; gap:6px; }
+  .donut-legend .dl-swatch{ width:9px; height:9px; border-radius:0; flex:none; }
+  .donut-legend .dl-label{ font-weight:700; color:var(--text-primary); }
+  .donut-legend .dl-count{ margin-left:auto; font-family:var(--font-mono); font-size:11.5px; white-space:nowrap; }
+
+  .combo-row{ display:flex; gap:26px; flex:1; min-height:0; padding-right:8px; }
+  .combo-donut-block{
+    flex:0 0 200px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:12px; min-width:0; padding:0 22px;
+  }
+  .combo-subtitle{ font-size:12.5px; font-weight:700; color:var(--navy); text-align:center; }
+  .combo-donut-block .donut-wrap{ flex:none; flex-direction:column; align-items:center; gap:10px; width:100%; }
+  .combo-donut-block .donut-legend{ flex:none; width:100%; gap:6px; }
+  .combo-scatter-block{ flex:1; min-width:0; min-height:0; position:relative; }
+
+  .panel{
+    background:var(--bg-surface); border:1px solid var(--border); border-radius:0;
+    padding:11px 14px 13px; display:flex; flex-direction:column; min-width:0; height:100%; min-height:0;
+  }
+  .panel-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:2px;}
+  .panel-title{font-size:15.5px; font-weight:700; color:var(--navy); letter-spacing:-.1px;}
+  .panel-desc{font-size:12px; color:var(--text-muted); margin:2px 0 8px;}
+  .panel-tools{display:flex; align-items:center; gap:6px; flex:none;}
+  .seg{display:flex; border:1px solid var(--border-strong); border-radius:2px; overflow:hidden; flex:none;}
+  .seg button{
+    appearance:none; border:none; background:var(--bg-surface-2); color:var(--text-secondary);
+    font-size:12px; font-weight:700; padding:4px 10px; cursor:pointer; border-right:1px solid var(--border-strong);
+  }
+  .seg button:last-child{border-right:none;}
+  .seg button.on{background:var(--navy); color:#fff;}
+  .seg button:not(.on):hover{background:#e4e7ea;}
+
+  .legend-line{display:flex; align-items:center; gap:14px; font-size:12px; color:var(--text-secondary); flex-wrap:wrap;}
+  .legend-item{display:flex; align-items:center; gap:5px;}
+  .legend-swatch{width:9px; height:9px; border-radius:0; flex:none;}
+  .legend-swatch.dot{border-radius:50%;}
+
+  .chart-wrap{flex:1; min-height:0; position:relative;}
+  .chart-wrap svg{display:block; overflow:visible;}
+  .axis-label{font-size:10px; fill:var(--text-muted);}
+  .grid-line{stroke:var(--grid); stroke-width:1;}
+  .baseline{stroke:var(--border-strong); stroke-width:1;}
+
+  .tooltip{
+    position:absolute; pointer-events:none; z-index:40;
+    background:var(--bg-surface); color:var(--text-primary); border:1px solid var(--navy);
+    font-size:12px; line-height:1.5; padding:7px 10px; border-radius:0;
+    box-shadow:none;
+    max-width:240px; opacity:0; transform:translate(-50%,-100%);
+    transition:opacity .08s;
+  }
+  .tooltip.show{opacity:1;}
+  .tooltip b{font-weight:700;}
+  .tooltip .trow{display:flex; justify-content:space-between; gap:12px;}
+  .tooltip .tmuted{color:var(--text-muted);}
+
+  .empty-note{font-size:12.5px; color:var(--text-muted); padding:6px 2px;}
+  .disclaimer{
+    font-size:12px; color:var(--text-secondary); padding:10px 12px; margin-top:2px;
+    background:var(--bg-surface); border:1px solid var(--border); border-left:3px solid var(--warn);
+  }
+  .disclaimer b{color:var(--warn); font-weight:700;}
+
+  /* ---------- 장부형 표 ---------- */
+  .tbl-scroll{overflow:auto; flex:1; min-height:0; border:1px solid var(--border); border-radius:0;}
+  table.datatable{width:100%; font-size:13.5px;}
+  table.datatable thead th{
+    position:sticky; top:0; background:var(--bg-surface-2); text-align:left; font-weight:700;
+    color:var(--text-primary); padding:7px 9px; border-bottom:1px solid var(--border-strong);
+    border-right:1px solid var(--border);
+    white-space:nowrap; font-size:13px;
+  }
+  table.datatable thead th:last-child{border-right:none;}
+  table.datatable td{
+    padding:5px 9px; border-bottom:1px solid var(--border); border-right:1px solid var(--border);
+    white-space:nowrap; font-size:13.5px;
+  }
+  table.datatable td:last-child{border-right:none;}
+  table.datatable tbody tr{cursor:pointer;}
+  table.datatable tbody tr:nth-child(even){background:#fafbfb;}
+  table.datatable tbody tr:hover{background:var(--accent-weak);}
+  table.datatable tbody tr.selected{background:var(--accent-weak); box-shadow:inset 3px 0 0 var(--navy);}
+  table.datatable td.num{text-align:right; font-family:var(--font-mono); font-variant-numeric:tabular-nums;}
+  .rank-pill{
+    display:inline-flex; align-items:center; justify-content:center; min-width:20px; height:18px;
+    border-radius:2px; background:var(--bg-surface-2); border:1px solid var(--border-strong);
+    font-family:var(--font-mono); font-size:11.5px; font-weight:700; color:var(--text-secondary); padding:0 4px;
+  }
+  .grade-pill{
+    display:inline-flex; align-items:center; justify-content:center; min-width:22px; height:18px;
+    border-radius:2px; font-size:12px; font-weight:700; padding:0 7px; border:1px solid transparent;
+  }
+  .grade-상{background:var(--good-weak); color:#186b2c; border-color:var(--good);}
+  .grade-중{background:var(--warn-weak); color:var(--warn); border-color:var(--warn);}
+  .grade-하{background:var(--crit-weak); color:#b32a0d; border-color:var(--crit);}
+
+  /* map */
+  .gbmap-region{stroke:#fff; stroke-width:0.6; cursor:pointer; transition:stroke .1s, stroke-width .1s;}
+  .gbmap-region:hover{stroke:var(--navy); stroke-width:1.4;}
+  .gbmap-region.selected{stroke:var(--navy); stroke-width:2.2;}
+  .gbmap-label{font-size:9px; fill:var(--text-primary); font-weight:700; pointer-events:none; text-anchor:middle; paint-order:stroke; stroke:#fff; stroke-width:2.6px;}
+  .gbmap-val{font-size:8px; fill:var(--text-secondary); font-weight:500; font-family:var(--font-mono); pointer-events:none; text-anchor:middle; paint-order:stroke; stroke:#fff; stroke-width:2.6px;}
+
+  .school-info-card{
+    display:flex; align-items:center; gap:12px; padding:9px 11px; border:1px solid var(--border);
+    border-radius:0; background:var(--bg-surface-2); margin-bottom:9px;
+  }
+  .school-info-card .si-name{font-size:15px; font-weight:700;}
+  .school-info-card .si-meta{display:flex; gap:9px; font-size:12.5px; color:var(--text-secondary); margin-top:2px; flex-wrap:wrap;}
+  .school-info-card .si-idx{margin-left:auto; text-align:right; flex:none;}
+  .school-info-card .si-idx .v{font-size:19px; font-weight:700; font-family:var(--font-mono); color:var(--navy);}
+  .school-info-card .si-idx .l{font-size:11.5px; color:var(--text-muted);}
+
+  .vuln-list{display:flex; flex-direction:column; gap:4px; margin-top:8px;}
+  .vuln-item{
+    display:flex; align-items:center; gap:7px; font-size:12.5px; font-weight:500;
+    padding:6px 9px; border-radius:2px; background:var(--crit-weak); color:#b32a0d; border:1px solid var(--crit);
+  }
+  .vuln-item .vi-dot{width:6px;height:6px;border-radius:50%;background:var(--crit); flex:none;}
+
+  .type-card-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; flex:1; min-height:0; overflow-y:auto;}
+  .type-card{
+    border:1px solid var(--border); border-radius:0; padding:8px 10px; display:flex; flex-direction:column; gap:3px;
+    border-left:3px solid var(--border-strong); background:var(--bg-surface);
+  }
+  .type-card.on{background:var(--accent-weak); border-color:var(--navy-2);}
+  .type-card .tc-head{display:flex; align-items:center; justify-content:space-between;}
+  .type-card .tc-name{font-size:13.5px; font-weight:700;}
+  .type-card .tc-count{font-size:12px; font-weight:700; color:var(--text-secondary); font-family:var(--font-mono);}
+  .type-card .tc-row{font-size:12px; color:var(--text-secondary); display:flex; gap:6px; line-height:1.45;}
+  .type-card .tc-row .k{color:var(--text-muted); flex:none; min-width:44px;}
+
+  .note-inline{font-size:11.5px; color:var(--text-muted);}
+  .hidden{display:none !important;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+
+  .stat-mini{font-size:12px; color:var(--text-muted); display:flex; gap:10px; margin-top:6px;}
+
+  /* ---------- 푸터 네이비 밴드 ---------- */
+  .gov-footer{background:var(--navy); color:#b9c8da; margin-top:8px; border-top:3px solid var(--green);}
+  .gov-footer .inner{
+    min-width:1280px; max-width:1600px; margin:0 auto; padding:18px 20px 22px;
+    display:flex; align-items:flex-start; gap:24px; font-size:12.5px; line-height:1.6;
+  }
+  .gov-footer .f-brand{color:#fff; font-size:14.5px; font-weight:700;}
+  .gov-footer .f-right{margin-left:auto; text-align:right; color:#8fa4bd; font-size:12px;}
+</style>
+<div class="gov-banner"><div class="inner"><b>경상북도교육청</b><span>AI·디지털교육 인프라 격차 분석 시스템 (내부 행정용)</span></div></div>
+<header class="masthead"><div class="inner">
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg>
+    <span>경상북도교육청</span>
+    <span class="sys">디지털교육 준비도 분석 대시보드</span>
+  </div>
+  <div class="mh-right"><span class="mh-user">정책기획과</span><span>|</span><span>2025-09-15 기준</span></div>
+</div></header>
+<div class="app" id="app">
+
+  <div class="pagehead" id="pagehead"></div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+  <div class="filterbar" id="filterbar"></div>
+
+  <div id="screens"></div>
+
+  <div class="disclaimer">※ 현재 화면의 수치는 대시보드 UI 검토를 위한 <b>예시(Mock) 데이터</b>입니다. 실제 인프라·활용 현황과 무관하며, 산출 가중치·등급 기준·클러스터 유형은 추후 분석모델 설계 과정에서 확정됩니다.</div>
+</div>
+<footer class="gov-footer"><div class="inner">
+  <div>
+    <div class="f-brand">경상북도교육청 · 디지털교육 준비도 분석 시스템</div>
+    <div>경상북도 안동시 풍천면 도청대로 511 · 대표전화 054-805-3000</div>
+  </div>
+  <div class="f-right">본 화면은 내부 행정 검토용 시제품(Prototype)입니다.<br>ⓒ Gyeongsangbuk-do Office of Education</div>
+</div></footer>
+<script>
+window.GB_MAP_DATA = {"width":520,"height":314.0,"paths":{"포항":"M 204.84,239.23 L 208.6,240.59 L 208.7,241.1 L 205.6,240.78 L 204.08,242.58 L 205.54,244.01 L 205.93,242.88 L 207.52,243.29 L 207.7,241.88 L 207.6,243.65 L 206.55,244.78 L 211.22,246.76 L 212.16,244.87 L 217.82,241.35 L 218.03,239.54 L 220.49,236.39 L 221.69,236.25 L 223.45,231.96 L 226.37,233.08 L 226.16,234.52 L 228.08,238.08 L 227.27,241.6 L 228.18,242.8 L 225.95,247.05 L 224.11,247.44 L 224.84,248.12 L 223.33,252.8 L 221.36,256.21 L 219.83,256.68 L 221.75,261.1 L 220.58,262.2 L 221.14,263.88 L 220.01,264.15 L 219.79,265.29 L 221.79,266.28 L 218.87,270.94 L 216.15,270.23 L 214.9,268.69 L 211.33,269.52 L 209.4,264.69 L 207.94,263.8 L 205.97,265.93 L 205.54,267.95 L 199.7,266.81 L 198.95,265.59 L 200.06,264.82 L 199.87,263.29 L 196.68,262.44 L 196.06,256.42 L 194.04,253.92 L 194.43,252.06 L 192.17,248.39 L 192.46,246.28 L 191.01,246.16 L 191.66,245.92 L 191.3,243.72 L 188.93,240.87 L 190.16,234.33 L 188.86,232.88 L 185.17,233.54 L 184.11,237.02 L 182.16,238.49 L 179.62,238.56 L 176.38,241.07 L 175.31,236.98 L 171.58,236.13 L 169.95,232.65 L 167.99,232.92 L 165.64,230.08 L 165.54,228.91 L 167.03,227.35 L 166.11,226.1 L 162.91,227.34 L 161.25,224.98 L 161.64,222.71 L 159.27,220.71 L 152.27,218.79 L 153.61,216.99 L 157.12,216.15 L 158.97,210.25 L 161.89,210.64 L 161.84,209.66 L 164.09,208.05 L 163.27,205.8 L 161.21,205.3 L 160.28,203.33 L 163.62,201.54 L 165.5,201.95 L 166.63,203.45 L 169.95,203.62 L 172.39,207.53 L 175.43,209.81 L 178.79,206.74 L 180.04,203.17 L 182.55,201.53 L 181.81,199.82 L 183.22,195.8 L 186.28,194.12 L 187.63,194.6 L 187.8,193.02 L 188.66,193.51 L 190.16,192.6 L 191.74,194.87 L 190.0,198.26 L 190.16,200.06 L 192.41,202.98 L 193.89,202.36 L 196.97,203.17 L 198.73,202.15 L 201.59,202.93 L 201.19,205.0 L 202.91,207.42 L 202.22,208.96 L 202.93,210.98 L 201.04,213.53 L 201.63,215.27 L 203.61,216.28 L 204.66,219.36 L 204.01,223.01 L 207.61,227.15 L 209.71,227.9 L 209.7,230.01 L 208.56,229.5 L 207.14,231.36 L 206.94,233.74 L 202.46,235.47 L 201.87,237.13 L 202.3,237.38 L 202.5,237.84 L 202.13,237.35 L 201.18,237.38 L 202.84,240.91 L 204.82,239.29 L 206.16,239.76 L 204.84,239.23 Z M 212.82,229.93 L 209.7,226.71 L 209.72,226.68 L 212.86,229.89 L 212.81,231.24 L 212.82,229.93 Z","경주":"M 214.37,294.1 L 212.98,298.19 L 211.53,298.56 L 211.0,300.7 L 204.47,298.05 L 201.16,297.83 L 200.07,296.29 L 198.72,296.22 L 196.25,297.74 L 195.44,299.47 L 192.46,299.73 L 191.43,301.91 L 186.21,299.22 L 187.11,294.36 L 186.38,292.84 L 183.46,292.34 L 180.27,289.62 L 178.89,290.65 L 176.75,289.19 L 176.13,290.47 L 174.07,290.61 L 172.05,289.02 L 171.07,290.91 L 165.13,292.53 L 163.46,294.07 L 162.18,297.49 L 162.29,299.52 L 163.97,301.4 L 163.25,302.4 L 159.6,300.79 L 158.1,296.87 L 158.38,293.75 L 156.4,294.71 L 154.06,293.82 L 153.29,290.22 L 150.15,287.03 L 149.88,284.29 L 150.38,281.6 L 153.24,280.58 L 152.37,277.13 L 155.58,270.9 L 156.01,268.14 L 157.77,265.92 L 157.06,260.47 L 160.61,258.11 L 161.9,254.72 L 166.38,255.29 L 168.37,258.57 L 170.66,256.89 L 170.05,253.66 L 168.43,251.48 L 167.77,244.47 L 168.26,243.28 L 169.77,244.58 L 171.98,243.78 L 170.73,239.98 L 172.92,236.73 L 174.62,236.68 L 176.11,237.85 L 176.74,241.06 L 178.81,238.99 L 182.16,238.49 L 184.11,237.02 L 185.17,233.54 L 188.86,232.88 L 190.16,234.33 L 188.93,240.87 L 191.3,243.72 L 191.66,245.92 L 191.01,246.16 L 192.46,246.28 L 192.17,248.39 L 194.43,252.06 L 194.04,253.92 L 196.06,256.42 L 196.68,262.44 L 199.87,263.29 L 200.06,264.82 L 198.95,265.59 L 199.7,266.81 L 205.54,267.95 L 205.97,265.93 L 207.94,263.8 L 209.4,264.69 L 211.33,269.52 L 214.9,268.69 L 217.46,270.79 L 219.7,270.47 L 218.62,273.31 L 218.95,276.1 L 217.87,275.93 L 216.32,279.13 L 216.65,284.61 L 215.38,285.99 L 215.06,291.28 L 213.99,292.18 L 214.37,294.1 Z","김천":"M 63.21,230.4 L 62.37,232.58 L 64.44,236.35 L 62.86,238.59 L 54.48,236.65 L 52.69,238.21 L 50.8,238.32 L 50.84,240.36 L 47.63,239.79 L 46.98,240.28 L 48.14,243.17 L 47.26,245.09 L 47.77,246.51 L 46.13,247.42 L 45.28,250.76 L 41.09,251.87 L 40.29,251.02 L 38.2,252.68 L 37.31,253.88 L 37.29,257.87 L 34.72,255.34 L 33.18,254.65 L 32.31,255.45 L 33.32,260.95 L 34.51,261.91 L 35.07,264.52 L 37.09,265.64 L 35.36,269.22 L 35.89,270.82 L 34.91,270.58 L 32.61,272.37 L 29.82,271.46 L 27.52,272.52 L 25.56,271.15 L 23.68,267.81 L 22.69,268.86 L 19.64,267.34 L 18.64,268.47 L 16.54,268.3 L 17.48,266.97 L 15.84,262.34 L 12.43,263.36 L 11.31,262.36 L 10.99,256.69 L 14.7,253.48 L 11.93,248.65 L 12.39,247.52 L 10.14,245.91 L 10.29,241.86 L 11.32,239.73 L 13.59,239.23 L 15.38,236.82 L 17.88,237.33 L 21.02,234.28 L 20.73,231.02 L 22.05,228.89 L 21.77,226.72 L 24.45,225.01 L 24.44,222.01 L 25.66,220.79 L 23.84,218.51 L 23.21,214.04 L 27.26,212.25 L 29.09,212.69 L 30.94,214.66 L 33.34,213.61 L 29.83,207.39 L 31.15,205.49 L 32.45,206.72 L 35.76,207.1 L 38.34,205.45 L 39.89,207.85 L 41.21,206.92 L 41.37,205.35 L 46.41,204.66 L 48.0,206.51 L 51.13,206.65 L 55.89,209.53 L 55.98,213.57 L 56.99,214.19 L 59.1,213.48 L 60.64,214.44 L 60.55,217.85 L 63.67,218.78 L 62.32,223.17 L 63.8,224.44 L 61.08,228.92 L 63.21,230.4 Z","안동":"M 152.4,126.94 L 152.01,128.86 L 153.58,131.79 L 152.27,138.59 L 153.17,141.67 L 152.4,142.68 L 152.5,146.69 L 153.7,152.17 L 151.02,155.87 L 152.58,158.49 L 150.54,158.92 L 150.17,161.11 L 153.22,165.03 L 150.49,168.68 L 151.63,171.92 L 150.35,171.35 L 149.5,172.22 L 151.54,181.32 L 148.77,187.32 L 148.79,191.74 L 147.34,192.2 L 145.25,194.8 L 144.7,196.99 L 141.79,198.39 L 139.51,198.3 L 139.09,196.05 L 139.93,194.04 L 139.0,190.98 L 137.89,190.79 L 138.39,188.48 L 137.27,187.43 L 138.04,185.87 L 134.5,183.9 L 131.97,173.75 L 125.82,171.79 L 122.91,168.66 L 121.36,167.97 L 118.9,169.95 L 117.25,169.1 L 115.86,171.16 L 116.21,174.44 L 106.34,177.85 L 106.23,178.88 L 103.89,179.18 L 102.94,181.18 L 102.16,180.05 L 102.34,177.04 L 99.65,175.7 L 98.29,173.74 L 96.13,167.74 L 93.83,166.46 L 90.64,166.25 L 88.75,163.42 L 86.7,164.08 L 86.59,166.4 L 85.24,166.38 L 84.79,167.75 L 81.27,165.76 L 81.78,163.62 L 80.69,162.98 L 85.29,160.14 L 84.12,157.57 L 88.96,154.88 L 89.69,152.8 L 88.67,152.13 L 89.04,150.4 L 90.24,149.28 L 91.43,150.29 L 93.58,150.14 L 94.21,148.12 L 92.61,147.27 L 92.98,145.84 L 97.32,144.66 L 98.94,142.7 L 103.12,142.05 L 102.73,137.82 L 103.73,135.66 L 101.38,134.78 L 102.34,132.13 L 104.42,132.55 L 107.23,131.49 L 109.19,132.78 L 111.11,132.5 L 112.88,134.47 L 115.2,133.47 L 116.49,134.56 L 117.42,133.98 L 118.8,135.15 L 120.1,134.83 L 119.06,132.29 L 120.81,126.6 L 119.97,124.0 L 121.14,122.26 L 119.97,120.61 L 121.49,117.19 L 122.81,117.07 L 123.57,118.38 L 128.47,115.0 L 129.46,119.24 L 130.84,117.06 L 133.24,117.24 L 133.86,118.31 L 136.11,118.78 L 139.62,123.09 L 141.42,122.43 L 143.32,123.89 L 147.14,123.09 L 149.01,126.26 L 152.4,126.94 Z","구미":"M 61.4,189.95 L 64.37,190.83 L 65.31,193.03 L 66.48,192.82 L 68.72,190.1 L 72.68,191.85 L 76.54,198.99 L 80.43,201.79 L 79.12,204.6 L 79.31,206.47 L 81.39,208.29 L 82.27,210.83 L 87.91,208.41 L 87.23,209.68 L 88.42,210.52 L 90.18,216.13 L 91.85,213.78 L 94.47,214.53 L 96.04,217.25 L 97.06,217.35 L 96.49,219.29 L 94.97,219.8 L 96.56,223.39 L 96.01,224.67 L 97.83,227.82 L 89.66,227.56 L 88.89,225.64 L 86.89,230.74 L 85.18,232.52 L 85.94,233.97 L 80.79,232.76 L 79.97,231.5 L 78.16,232.21 L 77.67,230.83 L 76.47,231.01 L 74.77,233.63 L 75.33,234.3 L 72.1,235.83 L 68.2,230.95 L 63.28,231.49 L 63.21,230.4 L 61.08,228.92 L 63.8,224.44 L 62.32,223.17 L 63.74,219.06 L 60.55,217.85 L 60.64,214.44 L 59.1,213.48 L 56.99,214.19 L 55.98,213.57 L 55.89,209.53 L 51.13,206.65 L 48.0,206.51 L 46.41,204.66 L 43.48,204.71 L 42.96,202.99 L 43.86,200.05 L 46.27,198.39 L 52.25,198.1 L 53.87,196.78 L 55.22,197.39 L 55.7,192.66 L 58.99,187.99 L 61.08,188.43 L 61.4,189.95 Z","영주":"M 116.49,80.75 L 115.41,82.42 L 115.59,85.0 L 114.4,86.26 L 114.43,91.14 L 110.08,97.95 L 111.57,99.84 L 108.85,101.27 L 107.38,104.75 L 108.23,106.08 L 109.18,105.7 L 109.71,107.53 L 107.9,109.62 L 110.7,112.0 L 112.07,111.93 L 113.2,108.88 L 118.75,108.22 L 120.01,112.23 L 116.99,115.19 L 118.8,115.68 L 118.05,118.51 L 118.94,120.25 L 120.01,118.36 L 120.87,119.03 L 120.02,121.27 L 121.14,122.26 L 119.88,124.59 L 120.81,126.6 L 119.06,132.29 L 120.1,134.83 L 118.8,135.15 L 117.42,133.98 L 116.49,134.56 L 115.2,133.47 L 112.88,134.47 L 111.11,132.5 L 109.19,132.78 L 106.36,131.4 L 104.42,132.55 L 102.34,132.13 L 102.07,134.2 L 101.21,134.31 L 100.59,130.76 L 99.59,130.28 L 96.41,123.7 L 94.14,122.91 L 90.62,124.41 L 86.63,122.37 L 86.14,118.11 L 87.46,113.18 L 83.3,110.98 L 83.18,108.47 L 80.11,106.55 L 80.47,104.53 L 82.76,100.66 L 82.38,98.49 L 84.75,97.44 L 85.63,94.68 L 90.67,91.72 L 91.79,89.07 L 96.79,87.26 L 99.12,83.69 L 98.16,82.12 L 100.46,80.06 L 103.48,80.04 L 103.65,78.62 L 106.77,80.56 L 109.22,76.62 L 113.93,78.58 L 116.49,80.75 Z","영천":"M 152.27,218.79 L 159.27,220.71 L 161.64,222.71 L 161.25,224.98 L 162.91,227.34 L 166.11,226.1 L 167.03,227.35 L 165.54,228.91 L 165.64,230.08 L 167.99,232.92 L 169.95,232.65 L 170.98,235.57 L 172.92,236.73 L 170.73,239.98 L 171.98,243.78 L 169.77,244.58 L 168.26,243.28 L 167.77,244.47 L 168.43,251.48 L 170.97,256.04 L 168.37,258.57 L 166.38,255.29 L 161.9,254.72 L 160.61,258.11 L 157.06,260.47 L 157.77,265.92 L 155.56,269.79 L 151.64,271.79 L 148.91,270.39 L 146.49,272.24 L 144.93,271.28 L 142.07,272.1 L 139.89,270.03 L 138.66,270.22 L 137.38,266.67 L 135.62,264.82 L 137.63,263.05 L 135.15,261.3 L 134.85,257.88 L 136.01,256.47 L 135.48,252.54 L 132.81,250.53 L 129.7,250.84 L 129.6,249.63 L 126.4,247.3 L 124.25,248.12 L 119.76,246.52 L 118.22,244.45 L 114.92,243.33 L 114.93,239.68 L 117.12,233.46 L 118.35,233.77 L 119.08,232.59 L 118.25,231.13 L 120.97,229.2 L 121.1,228.11 L 122.18,231.04 L 123.56,229.47 L 126.74,231.76 L 128.36,231.8 L 134.6,226.7 L 134.58,223.55 L 135.6,222.44 L 139.78,222.69 L 140.88,219.69 L 140.5,217.43 L 143.34,216.17 L 149.65,219.87 L 152.27,218.79 Z","상주":"M 14.17,146.27 L 17.44,151.77 L 18.36,158.1 L 17.32,161.1 L 23.07,164.14 L 23.27,159.34 L 26.61,158.17 L 28.18,159.16 L 33.15,158.69 L 34.46,156.47 L 33.22,153.08 L 35.14,149.52 L 39.44,149.31 L 41.29,146.89 L 45.26,150.41 L 48.4,150.84 L 49.09,153.23 L 52.39,153.76 L 52.31,154.76 L 53.99,154.3 L 53.62,158.64 L 54.38,160.7 L 56.1,161.44 L 60.2,160.54 L 60.57,163.16 L 59.75,165.08 L 60.51,168.3 L 59.45,169.85 L 61.64,170.66 L 61.81,171.98 L 64.25,171.99 L 67.59,175.66 L 67.08,178.33 L 68.6,178.86 L 69.27,181.26 L 67.64,184.24 L 66.22,184.53 L 65.29,188.17 L 62.72,190.55 L 60.47,188.08 L 58.31,188.46 L 55.7,192.66 L 55.22,197.39 L 53.87,196.78 L 52.25,198.1 L 45.77,198.64 L 43.52,200.67 L 43.34,205.12 L 41.37,205.35 L 41.21,206.92 L 39.89,207.85 L 38.34,205.45 L 35.76,207.1 L 32.45,206.72 L 32.05,204.77 L 27.39,202.32 L 23.61,203.65 L 22.26,205.75 L 20.89,205.42 L 17.2,201.37 L 14.16,200.03 L 13.8,197.66 L 11.04,202.05 L 7.14,202.03 L 5.78,196.31 L 7.2,193.2 L 11.04,190.62 L 12.14,188.43 L 10.69,186.57 L 11.23,185.21 L 10.36,183.86 L 8.53,183.07 L 8.65,181.57 L 9.9,181.0 L 11.04,178.63 L 9.8,178.2 L 10.95,172.25 L 10.2,168.05 L 14.05,165.05 L 13.57,161.76 L 10.12,160.2 L 9.47,156.83 L 8.2,155.44 L 4.35,154.43 L 3.61,154.97 L 0.3,152.51 L 0.0,151.11 L 3.17,148.25 L 5.69,149.05 L 7.93,148.22 L 6.46,144.98 L 8.23,144.76 L 10.7,141.37 L 11.8,145.45 L 14.17,146.27 Z","문경":"M 73.01,118.34 L 72.38,124.8 L 73.13,126.27 L 71.87,128.09 L 69.28,128.04 L 68.42,128.97 L 68.92,132.84 L 68.23,135.05 L 69.0,135.52 L 66.9,137.95 L 68.86,141.12 L 70.74,142.09 L 68.16,143.73 L 66.8,143.12 L 66.36,141.33 L 65.44,141.47 L 65.19,144.32 L 62.84,145.65 L 62.01,147.77 L 60.51,147.97 L 60.72,148.81 L 59.44,148.59 L 62.45,153.89 L 63.77,153.79 L 63.91,157.72 L 59.82,157.97 L 60.05,161.02 L 58.23,160.61 L 56.1,161.44 L 54.38,160.7 L 53.62,158.64 L 53.99,154.3 L 52.31,154.76 L 52.39,153.76 L 49.09,153.23 L 48.4,150.84 L 45.26,150.41 L 41.29,146.89 L 39.44,149.31 L 35.14,149.52 L 33.22,153.08 L 34.46,156.47 L 33.15,158.69 L 28.18,159.16 L 26.61,158.17 L 23.84,158.96 L 23.07,164.14 L 17.32,161.1 L 18.36,158.1 L 16.33,147.91 L 17.38,147.39 L 18.24,142.01 L 17.29,141.59 L 17.03,139.47 L 15.51,139.61 L 14.91,138.06 L 9.97,137.38 L 12.47,135.41 L 16.95,135.96 L 17.54,133.49 L 19.57,133.24 L 20.98,128.63 L 24.33,131.74 L 26.26,131.78 L 27.91,129.73 L 32.36,133.29 L 35.0,133.3 L 34.69,131.0 L 30.14,126.98 L 33.02,119.83 L 33.57,116.07 L 35.17,116.37 L 37.94,119.19 L 37.88,118.22 L 39.78,117.26 L 40.03,115.27 L 44.11,113.39 L 45.84,115.19 L 53.34,116.82 L 52.91,111.46 L 53.66,110.86 L 56.25,111.49 L 55.96,108.72 L 56.86,107.21 L 62.05,109.81 L 66.39,116.03 L 71.08,116.7 L 73.01,118.34 Z","경산":"M 149.85,271.48 L 148.44,273.04 L 147.95,276.89 L 145.24,283.1 L 142.63,283.71 L 141.76,285.46 L 140.16,282.81 L 139.9,284.17 L 137.8,285.35 L 136.39,283.69 L 135.09,283.95 L 135.5,285.61 L 134.48,286.41 L 126.93,285.96 L 123.58,290.13 L 123.7,292.74 L 121.0,292.16 L 119.31,289.72 L 117.23,289.61 L 115.66,286.03 L 114.52,286.03 L 114.76,284.12 L 112.96,279.35 L 117.57,276.03 L 116.43,272.9 L 118.52,271.41 L 118.12,268.09 L 120.15,269.0 L 122.96,266.64 L 122.96,260.18 L 120.01,256.58 L 121.23,249.72 L 119.28,247.74 L 119.76,246.52 L 124.25,248.12 L 126.4,247.3 L 129.6,249.63 L 129.7,250.84 L 132.81,250.53 L 135.48,252.54 L 136.01,256.47 L 134.85,257.88 L 135.15,261.3 L 137.63,263.05 L 135.62,264.82 L 137.38,266.67 L 138.66,270.22 L 139.89,270.03 L 142.07,272.1 L 144.93,271.28 L 146.49,272.24 L 148.91,270.39 L 149.85,271.48 Z","의성":"M 79.52,162.57 L 81.78,163.62 L 81.27,165.76 L 83.85,167.62 L 86.59,166.4 L 86.7,164.08 L 88.75,163.42 L 90.64,166.25 L 93.83,166.46 L 96.13,167.74 L 98.29,173.74 L 99.65,175.7 L 102.34,177.04 L 102.16,180.05 L 102.94,181.18 L 103.89,179.18 L 106.23,178.88 L 106.34,177.85 L 116.21,174.44 L 115.79,171.59 L 116.57,169.92 L 117.73,168.99 L 119.71,169.67 L 121.36,167.97 L 123.98,169.28 L 125.82,171.79 L 131.97,173.75 L 134.5,183.9 L 138.04,185.87 L 137.28,186.75 L 138.39,188.48 L 137.89,190.79 L 139.0,190.98 L 139.93,194.04 L 139.09,196.05 L 139.87,197.13 L 139.51,198.3 L 138.17,198.63 L 137.95,201.99 L 136.14,202.02 L 136.09,202.97 L 134.08,204.03 L 135.31,205.09 L 138.57,205.38 L 138.83,206.94 L 136.93,208.73 L 140.33,211.65 L 140.26,213.06 L 137.79,213.94 L 137.18,212.92 L 131.48,210.85 L 128.61,212.18 L 127.65,215.18 L 124.26,214.78 L 122.73,213.29 L 121.19,214.61 L 119.8,213.62 L 115.85,213.85 L 114.87,213.4 L 114.59,211.53 L 112.97,211.4 L 111.75,212.44 L 110.2,210.35 L 107.6,212.55 L 106.63,211.17 L 107.75,204.62 L 105.77,203.21 L 99.49,201.07 L 96.42,201.85 L 95.61,199.17 L 87.82,196.71 L 84.12,193.63 L 81.9,195.66 L 81.82,197.21 L 79.32,198.01 L 77.82,199.91 L 72.16,191.5 L 68.72,190.1 L 66.48,192.82 L 64.99,192.89 L 64.37,190.83 L 62.72,190.55 L 65.61,187.73 L 66.22,184.53 L 67.64,184.24 L 69.27,181.26 L 68.6,178.86 L 67.08,178.33 L 67.59,175.66 L 65.39,171.94 L 69.23,167.81 L 68.88,166.31 L 70.11,163.96 L 69.61,162.23 L 71.73,161.05 L 72.78,161.53 L 73.93,165.73 L 79.52,162.57 Z","청송":"M 173.02,166.18 L 172.46,169.75 L 175.37,176.36 L 177.62,177.85 L 179.41,177.51 L 180.66,180.83 L 182.69,182.65 L 181.69,184.09 L 182.68,185.19 L 181.21,187.82 L 182.19,190.5 L 184.69,190.59 L 186.05,191.94 L 185.74,194.48 L 183.78,195.27 L 182.13,197.6 L 182.55,201.53 L 180.04,203.17 L 178.79,206.74 L 175.43,209.81 L 172.39,207.53 L 170.56,203.9 L 166.63,203.45 L 165.5,201.95 L 163.62,201.54 L 160.3,203.86 L 161.21,205.3 L 163.27,205.8 L 164.09,208.05 L 161.84,209.66 L 161.89,210.64 L 158.97,210.25 L 156.84,216.49 L 153.61,216.99 L 152.27,218.79 L 149.65,219.87 L 143.34,216.17 L 140.21,217.98 L 138.39,215.28 L 140.26,213.06 L 140.33,211.65 L 136.93,208.73 L 138.83,206.94 L 138.57,205.38 L 135.31,205.09 L 134.08,204.03 L 136.09,202.97 L 136.14,202.02 L 137.95,201.99 L 138.45,198.33 L 141.79,198.39 L 144.7,196.99 L 145.25,194.8 L 149.27,190.53 L 148.77,187.32 L 151.54,181.32 L 149.5,172.22 L 150.35,171.35 L 151.63,171.92 L 150.49,168.68 L 153.22,165.03 L 150.17,161.11 L 150.54,158.92 L 152.58,158.49 L 151.02,155.87 L 153.58,151.31 L 159.51,153.5 L 160.15,157.11 L 162.26,159.48 L 167.37,158.93 L 169.99,160.84 L 170.12,165.6 L 173.02,166.18 Z","영양":"M 187.94,138.68 L 183.31,140.6 L 182.95,142.82 L 184.12,146.73 L 183.05,147.15 L 183.08,149.68 L 182.01,149.75 L 181.28,152.06 L 183.09,153.05 L 183.82,155.52 L 185.05,156.21 L 183.7,161.02 L 185.25,164.57 L 182.52,163.98 L 182.23,167.96 L 181.16,166.38 L 177.66,166.25 L 176.82,165.02 L 170.54,166.06 L 169.99,160.84 L 167.37,158.93 L 162.26,159.48 L 160.15,157.11 L 159.51,153.5 L 153.58,151.31 L 152.5,146.69 L 152.4,142.68 L 153.17,141.67 L 152.27,138.59 L 153.58,131.79 L 152.01,128.86 L 152.59,125.64 L 151.65,123.01 L 158.21,120.38 L 162.01,115.7 L 163.84,115.81 L 166.29,114.29 L 171.19,107.0 L 174.4,106.92 L 175.16,105.76 L 178.14,106.11 L 179.84,109.82 L 180.57,108.59 L 181.39,109.42 L 183.26,108.68 L 182.47,109.78 L 184.26,110.45 L 186.02,109.39 L 186.42,107.04 L 188.79,106.76 L 190.01,108.37 L 188.87,109.3 L 188.4,113.38 L 190.53,113.61 L 191.13,114.71 L 190.3,117.3 L 193.68,121.72 L 191.45,123.75 L 191.4,125.9 L 188.28,127.43 L 188.31,130.51 L 191.19,131.5 L 187.94,138.68 Z","영덕":"M 207.61,143.47 L 206.18,146.89 L 206.71,149.62 L 206.01,151.78 L 209.79,157.92 L 210.28,164.28 L 211.39,164.48 L 210.61,164.81 L 211.39,164.69 L 210.33,167.95 L 208.85,169.18 L 209.26,177.89 L 202.4,191.22 L 201.4,199.74 L 202.27,201.89 L 201.59,202.93 L 198.73,202.15 L 196.97,203.17 L 193.89,202.36 L 192.41,202.98 L 190.16,200.06 L 191.6,194.11 L 189.96,192.61 L 188.66,193.51 L 187.8,193.02 L 187.63,194.6 L 185.74,194.48 L 185.96,191.71 L 184.69,190.59 L 182.19,190.5 L 181.21,187.82 L 182.68,185.19 L 181.69,184.09 L 182.69,182.65 L 180.66,180.83 L 179.41,177.51 L 177.62,177.85 L 175.37,176.36 L 172.46,169.75 L 172.92,166.37 L 176.82,165.02 L 177.66,166.25 L 181.16,166.38 L 182.23,167.96 L 182.52,163.98 L 185.25,164.57 L 183.7,161.02 L 185.05,156.21 L 183.82,155.52 L 183.09,153.05 L 181.28,152.06 L 182.01,149.75 L 183.08,149.68 L 183.05,147.15 L 184.12,146.73 L 182.95,142.82 L 183.58,140.38 L 187.53,138.72 L 190.13,139.57 L 191.15,139.05 L 195.37,139.79 L 198.82,142.28 L 202.54,139.45 L 204.26,139.97 L 207.61,143.47 Z","청도":"M 159.6,300.79 L 158.33,303.66 L 156.28,303.24 L 151.92,307.35 L 148.62,306.32 L 146.1,303.24 L 142.77,302.36 L 139.22,304.19 L 138.49,303.18 L 133.8,310.44 L 132.38,309.22 L 128.42,310.52 L 126.53,313.95 L 122.74,313.95 L 118.47,311.73 L 115.75,312.28 L 113.75,309.58 L 109.75,309.13 L 107.23,311.22 L 102.89,311.95 L 99.12,309.87 L 98.62,308.41 L 97.48,308.13 L 97.31,306.45 L 94.52,305.03 L 94.59,299.33 L 93.23,297.15 L 94.23,293.95 L 93.37,290.93 L 98.31,287.1 L 100.33,286.88 L 101.25,287.96 L 101.84,287.08 L 104.16,286.85 L 104.34,291.39 L 105.63,292.59 L 110.68,289.7 L 113.19,289.55 L 114.31,287.68 L 113.96,286.58 L 115.66,286.03 L 117.23,289.61 L 119.31,289.72 L 121.0,292.16 L 123.7,292.74 L 123.58,290.13 L 126.93,285.96 L 134.48,286.41 L 135.5,285.61 L 135.09,283.95 L 136.39,283.69 L 137.8,285.35 L 139.9,284.17 L 140.16,282.81 L 141.4,285.63 L 142.63,283.71 L 144.85,283.51 L 147.95,276.89 L 147.73,275.22 L 149.24,271.62 L 151.64,271.79 L 155.56,269.79 L 152.37,277.13 L 153.24,280.58 L 150.38,281.6 L 150.15,287.03 L 153.29,290.22 L 154.06,293.82 L 156.4,294.71 L 158.38,293.75 L 158.1,296.87 L 159.6,300.79 Z","고령":"M 82.75,269.52 L 87.4,272.34 L 87.61,274.65 L 86.04,276.17 L 79.7,275.63 L 74.94,283.44 L 75.93,285.29 L 81.11,288.9 L 81.15,292.18 L 78.61,293.62 L 71.8,291.58 L 70.9,292.32 L 72.25,296.82 L 77.05,301.58 L 77.21,303.61 L 75.57,305.96 L 72.54,306.68 L 70.95,301.73 L 67.36,301.41 L 65.06,300.0 L 61.9,300.48 L 59.49,302.03 L 56.87,300.07 L 56.1,302.39 L 55.25,302.53 L 51.68,301.87 L 49.65,299.66 L 46.45,300.1 L 46.8,297.36 L 52.15,295.5 L 51.29,287.26 L 50.17,284.75 L 46.63,281.86 L 48.83,279.11 L 46.73,276.24 L 47.64,274.59 L 52.75,274.59 L 53.71,278.36 L 57.91,280.26 L 57.88,278.77 L 59.46,277.78 L 60.52,278.48 L 60.96,277.55 L 61.13,272.91 L 62.79,272.98 L 64.97,275.15 L 67.01,275.16 L 69.15,277.57 L 72.6,278.16 L 73.07,274.44 L 74.35,273.46 L 73.63,271.59 L 76.11,270.97 L 75.47,268.81 L 82.75,269.52 Z","성주":"M 62.98,238.48 L 63.79,240.51 L 65.62,240.84 L 66.52,242.47 L 65.75,244.42 L 66.7,248.16 L 69.3,249.29 L 70.4,252.6 L 71.91,252.4 L 73.05,254.62 L 76.61,254.92 L 76.94,261.85 L 74.94,267.46 L 76.11,270.97 L 73.63,271.59 L 74.35,273.46 L 73.07,274.44 L 73.0,277.84 L 69.15,277.57 L 67.01,275.16 L 64.97,275.15 L 62.03,272.79 L 60.96,273.14 L 60.52,278.48 L 59.46,277.78 L 57.88,278.77 L 57.91,280.26 L 53.71,278.36 L 52.75,274.59 L 49.96,274.08 L 47.64,274.59 L 46.76,275.85 L 48.83,279.11 L 47.51,280.34 L 46.49,280.54 L 45.71,279.26 L 43.34,279.51 L 41.57,276.56 L 41.71,273.55 L 35.89,270.82 L 35.36,269.22 L 37.09,265.64 L 34.91,264.23 L 31.97,256.12 L 33.18,254.65 L 37.29,257.87 L 37.31,253.88 L 38.2,252.68 L 40.29,251.02 L 41.09,251.87 L 45.28,250.76 L 46.13,247.42 L 47.77,246.51 L 47.26,245.09 L 48.14,243.17 L 46.98,240.28 L 47.63,239.79 L 50.84,240.36 L 50.8,238.32 L 52.69,238.21 L 54.48,236.65 L 62.98,238.48 Z","칠곡":"M 97.83,227.82 L 98.66,236.19 L 100.46,234.67 L 101.86,235.47 L 102.3,233.54 L 105.81,232.66 L 106.58,233.26 L 105.3,241.42 L 107.76,243.75 L 104.95,244.4 L 101.31,248.71 L 97.0,249.9 L 96.62,251.64 L 95.27,249.35 L 93.48,248.53 L 94.09,256.06 L 90.69,260.35 L 90.1,263.32 L 88.62,261.65 L 86.65,262.14 L 85.7,261.23 L 86.8,255.81 L 83.96,254.43 L 83.48,255.72 L 80.23,256.82 L 77.96,261.15 L 76.93,261.44 L 76.51,254.66 L 73.05,254.62 L 71.91,252.4 L 70.4,252.6 L 69.3,249.29 L 66.7,248.16 L 65.75,244.42 L 66.52,242.47 L 63.01,238.9 L 64.44,236.35 L 62.63,232.04 L 68.2,230.95 L 72.1,235.83 L 75.33,234.3 L 74.77,233.63 L 76.47,231.01 L 77.67,230.83 L 78.16,232.21 L 79.97,231.5 L 80.79,232.76 L 85.07,234.37 L 85.94,233.97 L 85.18,232.52 L 86.89,230.74 L 88.89,225.64 L 89.66,227.56 L 97.83,227.82 Z","예천":"M 100.45,133.04 L 103.73,135.66 L 102.73,137.82 L 103.12,142.05 L 98.94,142.7 L 97.32,144.66 L 92.98,145.84 L 92.61,147.27 L 94.21,148.12 L 93.58,150.14 L 91.43,150.29 L 90.24,149.28 L 89.04,150.4 L 88.67,152.13 L 89.69,152.8 L 88.82,155.14 L 84.12,157.57 L 85.29,160.14 L 81.69,162.64 L 79.52,162.57 L 73.93,165.73 L 72.78,161.53 L 71.73,161.05 L 69.61,162.23 L 70.11,163.96 L 68.88,166.31 L 69.23,167.81 L 65.76,171.18 L 66.02,173.4 L 63.71,171.74 L 61.81,171.98 L 61.64,170.66 L 59.45,169.85 L 60.51,168.3 L 59.75,165.08 L 60.57,163.16 L 59.56,158.44 L 63.91,157.72 L 63.77,153.79 L 62.45,153.89 L 59.44,148.59 L 60.72,148.81 L 60.51,147.97 L 62.01,147.77 L 62.84,145.65 L 65.19,144.32 L 65.44,141.47 L 66.36,141.33 L 66.8,143.12 L 68.16,143.73 L 70.36,143.03 L 70.55,141.7 L 68.86,141.12 L 66.9,137.95 L 69.0,135.52 L 68.23,135.05 L 68.92,132.84 L 68.42,128.97 L 69.28,128.04 L 71.87,128.09 L 73.13,126.27 L 72.38,124.8 L 73.01,118.34 L 74.53,116.67 L 79.66,116.84 L 83.3,110.98 L 85.06,111.24 L 87.59,113.94 L 86.14,118.11 L 86.63,122.37 L 90.62,124.41 L 94.14,122.91 L 96.41,123.7 L 99.59,130.28 L 100.59,130.76 L 100.45,133.04 Z","봉화":"M 177.27,80.37 L 173.96,83.87 L 170.7,81.55 L 164.41,85.59 L 165.68,85.9 L 165.03,87.24 L 165.71,91.07 L 165.17,93.07 L 164.03,92.84 L 163.46,94.09 L 164.78,94.68 L 164.42,95.57 L 166.89,95.71 L 167.76,97.47 L 171.06,98.56 L 172.4,100.89 L 172.06,103.07 L 173.39,104.66 L 173.44,106.36 L 171.01,107.08 L 169.09,111.15 L 166.29,114.29 L 163.84,115.81 L 162.01,115.7 L 158.21,120.38 L 151.65,123.01 L 152.48,126.92 L 149.01,126.26 L 147.14,123.09 L 143.32,123.89 L 141.42,122.43 L 139.62,123.09 L 136.11,118.78 L 133.86,118.31 L 133.24,117.24 L 130.84,117.06 L 129.46,119.24 L 128.47,115.0 L 123.57,118.38 L 122.81,117.07 L 121.49,117.19 L 120.87,119.03 L 120.01,118.36 L 118.94,120.25 L 118.05,118.51 L 118.8,115.68 L 116.99,115.19 L 120.01,112.23 L 118.75,108.22 L 113.2,108.88 L 112.07,111.93 L 110.7,112.0 L 107.9,109.62 L 109.71,107.53 L 109.18,105.7 L 108.23,106.08 L 107.4,104.51 L 108.85,101.27 L 111.57,99.84 L 110.08,97.95 L 114.43,91.14 L 115.41,82.42 L 117.71,80.05 L 122.19,82.58 L 123.31,80.99 L 122.1,78.47 L 122.62,75.89 L 123.6,76.92 L 125.57,72.35 L 128.02,73.21 L 128.08,74.47 L 129.09,74.94 L 131.84,74.55 L 134.07,78.81 L 137.34,80.02 L 138.12,78.55 L 140.4,79.93 L 140.49,78.18 L 142.18,76.51 L 143.82,72.39 L 146.68,72.13 L 148.41,74.7 L 152.15,73.62 L 158.29,74.92 L 161.2,76.65 L 162.6,73.01 L 165.81,71.09 L 174.81,76.03 L 177.27,80.37 Z","울진":"M 207.85,78.44 L 207.43,77.78 L 206.55,78.59 L 205.85,82.73 L 206.93,86.97 L 205.69,90.3 L 207.33,96.37 L 206.6,104.48 L 208.17,110.57 L 211.93,116.41 L 212.61,120.48 L 214.63,123.8 L 213.33,125.44 L 214.47,130.09 L 213.8,131.28 L 214.22,134.85 L 212.68,138.09 L 211.88,137.46 L 209.84,138.72 L 207.61,143.47 L 204.26,139.97 L 202.54,139.45 L 198.82,142.28 L 195.37,139.79 L 187.94,138.68 L 191.19,131.5 L 188.31,130.51 L 188.28,127.43 L 191.4,125.9 L 191.45,123.75 L 193.68,121.72 L 190.3,117.3 L 191.13,114.71 L 190.53,113.61 L 188.4,113.38 L 188.87,109.3 L 190.01,108.37 L 189.26,106.97 L 186.42,107.04 L 186.02,109.39 L 184.26,110.45 L 182.47,109.78 L 183.26,108.68 L 181.39,109.42 L 180.57,108.59 L 179.84,109.82 L 178.14,106.11 L 175.16,105.76 L 173.91,106.84 L 171.06,98.56 L 167.76,97.47 L 166.89,95.71 L 164.42,95.57 L 164.78,94.68 L 163.44,93.55 L 165.17,93.07 L 165.71,91.07 L 165.03,87.24 L 165.68,85.9 L 164.41,85.59 L 165.44,84.65 L 170.7,81.55 L 173.96,83.87 L 177.27,80.37 L 182.36,79.93 L 184.09,80.75 L 182.37,75.31 L 185.38,71.75 L 187.5,70.8 L 188.22,68.54 L 191.2,68.87 L 192.03,66.93 L 196.93,63.72 L 199.98,63.86 L 201.42,65.5 L 202.04,71.29 L 208.06,76.82 L 207.85,78.44 Z","울릉":"M 520.0,48.95 L 519.45,49.13 L 519.83,48.81 L 520.0,48.95 Z M 519.4,48.65 L 518.89,48.6 L 519.33,48.45 L 519.4,48.65 Z M 398.4,1.1 L 397.05,3.49 L 398.28,5.64 L 397.4,9.0 L 397.8,8.29 L 397.75,9.8 L 398.71,9.89 L 394.08,12.38 L 392.93,15.04 L 384.55,11.74 L 382.48,4.11 L 383.6,4.76 L 392.77,0.97 L 395.04,1.26 L 396.42,0.0 L 398.4,1.1 Z M 401.16,2.8 L 401.11,3.56 L 400.93,3.7 L 400.55,3.17 L 401.16,2.8 Z M 398.88,1.12 L 398.46,0.88 L 399.12,0.78 L 398.88,1.12 Z"},"centroids":{"포항":[192.7,230.8],"경주":[183.7,272.9],"김천":[35.9,235.9],"안동":[125.5,153.4],"구미":[71.4,212.5],"영주":[102.2,107.5],"영천":[146.2,243.0],"상주":[34.5,177.4],"문경":[45.0,135.9],"경산":[129.3,271.7],"의성":[104.5,188.0],"청송":[160.9,188.9],"영양":[172.1,135.0],"영덕":[194.1,168.9],"청도":[126.2,297.3],"고령":[65.2,287.1],"성주":[55.8,260.0],"칠곡":[85.0,242.9],"예천":[79.9,141.8],"봉화":[142.5,97.4],"울진":[193.5,102.1],"울릉":[391.2,7.4]},"mainBounds":[0.0,63.72,228.18,313.95],"ulleungBounds":[382.48,0.0,520.0,49.13]};
+</script>
+<script>
+/* ======================================================================
+   KERIS 12 - AI·디지털교육 인프라 격차 분석 대시보드
+   Mock 데이터 생성 모듈 (결정론적 시드 기반)
+   ====================================================================== */
+(function(global){
+  "use strict";
+
+  /* ---------------- seeded RNG ---------------- */
+  function mulberry32(seed){
+    let a = seed >>> 0;
+    return function(){
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const rng = mulberry32(20250828);
+  function rand(){ return rng(); }
+  function randRange(min, max){ return min + rand() * (max - min); }
+  function randGauss(mean, sd){
+    // Box-Muller
+    let u = 1 - rand(), v = rand();
+    let z = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+    return mean + z * sd;
+  }
+  function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)); }
+  function pick(arr){ return arr[Math.floor(rand() * arr.length)]; }
+  function round1(v){ return Math.round(v * 10) / 10; }
+
+  /* ---------------- regions ---------------- */
+  // tier: 1(강세)~4(취약) - 실제 도농 격차 통념을 반영한 임의의 프로토타입 기준선
+  const REGION_DEFS = [
+    { name:"포항", tier:1, schools:12 },
+    { name:"구미", tier:1, schools:10 },
+    { name:"경산", tier:1, schools:8 },
+    { name:"안동", tier:1, schools:7 },
+    { name:"경주", tier:2, schools:8 },
+    { name:"김천", tier:2, schools:6 },
+    { name:"칠곡", tier:2, schools:5 },
+    { name:"영주", tier:2, schools:5 },
+    { name:"상주", tier:3, schools:5 },
+    { name:"문경", tier:3, schools:4 },
+    { name:"영천", tier:3, schools:5 },
+    { name:"청도", tier:3, schools:4 },
+    { name:"성주", tier:3, schools:4 },
+    { name:"고령", tier:3, schools:3 },
+    { name:"예천", tier:3, schools:4 },
+    { name:"의성", tier:4, schools:4 },
+    { name:"청송", tier:4, schools:3 },
+    { name:"영양", tier:4, schools:2 },
+    { name:"영덕", tier:4, schools:3 },
+    { name:"봉화", tier:4, schools:3 },
+    { name:"울진", tier:4, schools:3 },
+    { name:"울릉", tier:4, schools:2 },
+  ];
+  const TIER_BASE_READINESS = { 1:72, 2:64, 3:56, 4:47 };
+  const TIER_JITTER = {}; // fixed per-region jitter, seeded
+  REGION_DEFS.forEach(r => { TIER_JITTER[r.name] = randRange(-4.5, 4.5); });
+
+  const REGIONS = REGION_DEFS.map(r => r.name);
+  const SCHOOL_LEVELS = ["초등학교", "중학교", "고등학교"];
+  const LEVEL_MODIFIER = { "초등학교": 2.2, "중학교": 0, "고등학교": -3.4 };
+  const YEARS = [2020, 2021, 2022, 2023, 2024, 2025];
+  const LATEST_YEAR = 2025;
+
+  /* ---------------- fictional school names ---------------- */
+  const NAME_PREFIX = [
+    "은빛","한빛","새봄","푸른","비룡","중앙","동산","서원","대성","성림",
+    "화랑","낙동","보람","정석","연화","오성","백양","청림","금호","가온",
+    "예지","솔빛","다정","해맑","여명","다솔","온새","별빛","서라벌","무궁",
+    "청암","경덕","소백","죽림","단산","향호","월성","보현","반월","시온",
+  ];
+  const NAME_DIR = ["", "동", "서", "남", "북", "제일", "중앙"];
+  function levelSuffix(level){
+    if(level === "초등학교") return "초등학교";
+    if(level === "중학교") return "중학교";
+    return "고등학교";
+  }
+  function makeSchoolNames(count, level, regionName, usedGlobal){
+    const names = [];
+    let tries = 0;
+    while(names.length < count && tries < 500){
+      tries++;
+      const usePrefix = rand() < 0.72 ? pick(NAME_PREFIX) : regionName;
+      const dir = rand() < 0.28 ? pick(NAME_DIR) : "";
+      const nm = usePrefix + dir + levelSuffix(level);
+      if(!usedGlobal.has(nm)){
+        usedGlobal.add(nm);
+        names.push(nm);
+      }
+    }
+    // fallback numbered if collisions exhausted the bank
+    let n = 2;
+    while(names.length < count){
+      const nm = regionName + "제" + n + levelSuffix(level);
+      if(!usedGlobal.has(nm)){ usedGlobal.add(nm); names.push(nm); }
+      n++;
+    }
+    return names;
+  }
+
+  /* ---------------- build static school roster ---------------- */
+  const usedNames = new Set();
+  const SCHOOLS = []; // {school_id, school_name, region, education_office, school_level, tier}
+  let sid = 1;
+  REGION_DEFS.forEach(rd => {
+    // distribute region's school count across 3 levels: roughly 45% elem / 30% mid / 25% high, min 1 each if total allows
+    const total = rd.schools;
+    let nElem = Math.max(1, Math.round(total * 0.45));
+    let nMid = Math.max(1, Math.round(total * 0.30));
+    let nHigh = Math.max(1, total - nElem - nMid);
+    if(nHigh < 1){ nHigh = 1; nMid = Math.max(1, total - nElem - nHigh); }
+    while(nElem + nMid + nHigh > total){
+      if(nElem > 1) nElem--; else if(nMid > 1) nMid--; else if(nHigh > 1) nHigh--; else break;
+    }
+    const counts = { "초등학교": nElem, "중학교": nMid, "고등학교": nHigh };
+    SCHOOL_LEVELS.forEach(level => {
+      const names = makeSchoolNames(counts[level], level, rd.name, usedNames);
+      names.forEach(nm => {
+        SCHOOLS.push({
+          school_id: "SCH" + String(sid++).padStart(4, "0"),
+          school_name: nm,
+          region: rd.name,
+          education_office: rd.name + "교육지원청",
+          school_level: level,
+          tier: rd.tier,
+          // per-school fixed random offset so a school stays relatively consistent rank across years
+          _offset: randGauss(0, 7.5),
+          _growthRate: randRange(0.6, 1.6), // how fast this school improves over years (relative)
+        });
+      });
+    });
+  });
+
+  /* ---------------- helpers to normalize raw -> 0-100 ---------------- */
+  function normLinear(v, lo, hi){ return clamp(((v - lo) / (hi - lo)) * 100, 0, 100); }
+  function normInverse(v, lo, hi){ return clamp((1 - (v - lo) / (hi - lo)) * 100, 0, 100); }
+
+  /* ---------------- generate yearly records ---------------- */
+  // year progress factor: 2020 -> 0, 2025 -> 1 (S-curve-ish, faster growth after 2023 for AIDT-related metrics)
+  function yearProgress(year){ return (year - 2020) / (LATEST_YEAR - 2020); }
+
+  const RECORDS = []; // flat list, one row per school*year matching the requested schema
+
+  SCHOOLS.forEach(sch => {
+    const base = TIER_BASE_READINESS[sch.tier] + TIER_JITTER[sch.region] + LEVEL_MODIFIER[sch.school_level] + sch._offset;
+    YEARS.forEach(year => {
+      const yp = yearProgress(year); // 0..1
+      const growth = yp * 8 * sch._growthRate; // overall improvement over the 6 years
+      const noise = randGauss(0, 3.6);
+      const readinessSeed = clamp(base + growth * 0.5 + noise, 18, 95); // rough target used to drive raw metrics
+
+      const t = readinessSeed / 100; // 0..1 "quality" dial for this school-year
+      // 인프라/활용도가 항상 함께 움직이지 않도록 축별 독립 편차를 추가 (클러스터 다양성 확보)
+      const t_infra = clamp(t + randGauss(0, 0.155), 0.03, 0.98);
+      const t_util = clamp(t + randGauss(0, 0.155), 0.03, 0.98);
+
+      // ---- infra raw metrics ----
+      const student_count = Math.round(randRange(
+        sch.school_level === "초등학교" ? 160 : sch.school_level === "중학교" ? 220 : 280,
+        sch.school_level === "초등학교" ? 620 : sch.school_level === "중학교" ? 520 : 780
+      ));
+      const class_count = Math.max(6, Math.round(student_count / randRange(21, 27)));
+      const devices_per_student = round1(clamp(0.18 + t_infra * 0.75 + randGauss(0, 0.05), 0.12, 1.1));
+      const device_count = Math.round(devices_per_student * student_count);
+      const device_aging_rate = round1(clamp(72 - t_infra * 48 + randGauss(0, 5), 6, 82));
+      const network_bandwidth = Math.round(clamp(140 + t_infra * 1900 + randGauss(0, 140), 80, 2400)); // Mbps
+      const wireless_ap_count = Math.max(2, Math.round((class_count / 3) * clamp(0.4 + t_infra * 0.9, 0.25, 1.3)));
+
+      // ---- utilization raw metrics (주로 학교별 품질 dial(t)에 좌우, 정책 도입 시점만 연도로 게이팅) ----
+      // AIDT(AI디지털교과서): 2025년 전면 도입 정책에 따라 그 이전에는 낮게, 이후 t에 크게 좌우
+      let aidtBase;
+      if(year <= 2022) aidtBase = t_util * 4;
+      else if(year === 2023) aidtBase = 2 + t_util * 15;
+      else if(year === 2024) aidtBase = 6 + t_util * 42;
+      else aidtBase = 12 + t_util * 68;
+      const aidt_adoption_rate = round1(clamp(aidtBase + randGauss(0, 4.5), 0, 97));
+
+      const onepassBase = year <= 2021 ? t_util * 12 : 4 + yp * 8 + t_util * 78;
+      const digital_onepass_rate = round1(clamp(onepassBase + randGauss(0, 6), 0, 98));
+
+      const trainBase = 6 + yp * 9 + t_util * 76;
+      const teacher_training_rate = round1(clamp(trainBase + randGauss(0, 6), 3, 99));
+
+      // ---- normalized 0-100 sub-scores ----
+      const s_devices = normLinear(devices_per_student, 0.15, 0.95);
+      const s_aging = normInverse(device_aging_rate, 10, 75);
+      const s_network = normLinear(network_bandwidth, 100, 2200);
+      const s_ap = normLinear(wireless_ap_count / Math.max(1, class_count / 3), 0.3, 1.2);
+      const infrastructure_index = round1(clamp(
+        s_devices * 0.32 + s_aging * 0.28 + s_network * 0.24 + s_ap * 0.16 + randGauss(0, 1.6), 0, 100
+      ));
+
+      const s_aidt = normLinear(aidt_adoption_rate, 0, 78);
+      const s_onepass = normLinear(digital_onepass_rate, 0, 86);
+      const s_train = normLinear(teacher_training_rate, 3, 88);
+      const utilization_index = round1(clamp(
+        s_aidt * 0.36 + s_onepass * 0.30 + s_train * 0.34 + randGauss(0, 1.6), 0, 100
+      ));
+
+      // 준비도 지수 = 인프라 50% + 활용도 50% (예시 가중치)
+      const readiness_index = round1(clamp(infrastructure_index * 0.5 + utilization_index * 0.5, 0, 100));
+
+      RECORDS.push({
+        year, school_id: sch.school_id, school_name: sch.school_name,
+        region: sch.region, education_office: sch.education_office, school_level: sch.school_level,
+        student_count, class_count,
+        device_count, devices_per_student, device_aging_rate,
+        network_bandwidth, wireless_ap_count,
+        aidt_adoption_rate, digital_onepass_rate, teacher_training_rate,
+        infrastructure_index, utilization_index, readiness_index,
+        // sub-scores kept for heatmap / radar use
+        _sub: {
+          devices: round1(s_devices), aging: round1(s_aging), network: round1(s_network), ap: round1(s_ap),
+          aidt: round1(s_aidt), onepass: round1(s_onepass), train: round1(s_train)
+        }
+      });
+    });
+  });
+
+  /* ---------------- post-process per year: grade, vulnerability, priority, cluster ---------------- */
+  const VULN_FIELDS = [
+    { key:"devices", label:"디지털기기" },
+    { key:"aging", label:"기기 노후화" },
+    { key:"network", label:"네트워크" },
+    { key:"aidt", label:"AI디지털교과서" },
+    { key:"onepass", label:"디지털 원패스" },
+    { key:"train", label:"교원 디지털 연수" },
+  ];
+
+  const byYear = {};
+  YEARS.forEach(year => {
+    const rows = RECORDS.filter(r => r.year === year);
+
+    // grade thresholds (example, not policy-fixed)
+    rows.forEach(r => {
+      r.readiness_grade = r.readiness_index >= 66 ? "상" : (r.readiness_index >= 48 ? "중" : "하");
+    });
+
+    // vulnerability: sub-score < 45 counts as vulnerable
+    rows.forEach(r => {
+      const weak = VULN_FIELDS.filter(f => r._sub[f.key] < 45).sort((a,b) => r._sub[a.key] - r._sub[b.key]);
+      r.vulnerability_count = weak.length;
+      r.main_vulnerability = weak.length ? weak.slice(0,2).map(f => f.label).join("·") : "없음";
+      r._weakFields = weak.map(f => f.key);
+    });
+
+    // priority score: lower readiness + more vulnerabilities -> higher priority
+    rows.forEach(r => {
+      r.priority_score = round1((100 - r.readiness_index) * 0.72 + r.vulnerability_count * 5.2 + (100 - r.infrastructure_index) * 0.08 + (100 - r.utilization_index) * 0.08);
+    });
+    rows.sort((a,b) => b.priority_score - a.priority_score);
+    rows.forEach((r, i) => { r.priority_rank = i + 1; });
+
+    // cluster assignment (quadrant vs overall mean, + PCA-like 2D projection)
+    const meanInfra = rows.reduce((s,r) => s + r.infrastructure_index, 0) / rows.length;
+    const meanUtil = rows.reduce((s,r) => s + r.utilization_index, 0) / rows.length;
+    const sdInfra = Math.sqrt(rows.reduce((s,r)=>s+Math.pow(r.infrastructure_index-meanInfra,2),0)/rows.length) || 1;
+    const sdUtil = Math.sqrt(rows.reduce((s,r)=>s+Math.pow(r.utilization_index-meanUtil,2),0)/rows.length) || 1;
+
+    rows.forEach(r => {
+      const zi = (r.infrastructure_index - meanInfra) / sdInfra;
+      const zu = (r.utilization_index - meanUtil) / sdUtil;
+      let cluster_id, cluster_name;
+      if(zi >= 0 && zu >= 0){ cluster_id = "A"; cluster_name = "유형 A · 준비 우수형"; }
+      else if(zi < 0 && zu >= 0){ cluster_id = "B"; cluster_name = "유형 B · 인프라 취약형"; }
+      else if(zi >= 0 && zu < 0){ cluster_id = "C"; cluster_name = "유형 C · 활용 취약형"; }
+      else { cluster_id = "D"; cluster_name = "유형 D · 종합 취약형"; }
+      r.cluster_id = cluster_id;
+      r.cluster_name = cluster_name;
+      // rotated 2D projection for a PCA-like scatter (fixed noise seeded already via other randoms is not per-row deterministic on refresh recompute;
+      // use zi/zu directly plus a small deterministic hash-based jitter so it's stable across re-renders)
+      const h = hashStr(r.school_id + "|" + year);
+      const jx = ((h % 1000) / 1000 - 0.5) * 0.5;
+      const jy = (((h >> 10) % 1000) / 1000 - 0.5) * 0.5;
+      r.dim1 = round1(zi * 0.82 + zu * 0.22 + jx);
+      r.dim2 = round1(zu * 0.82 - zi * 0.22 + jy);
+    });
+
+    byYear[year] = rows;
+  });
+
+  function hashStr(s){
+    let h = 0;
+    for(let i=0;i<s.length;i++){ h = (h * 31 + s.charCodeAt(i)) | 0; }
+    return Math.abs(h);
+  }
+
+  /* ---------------- exports ---------------- */
+  global.KERIS_DATA = {
+    REGIONS, REGION_DEFS, SCHOOL_LEVELS, YEARS, LATEST_YEAR,
+    VULN_FIELDS, SCHOOLS, RECORDS, byYear,
+  };
+
+})(typeof window !== "undefined" ? window : globalThis);
+</script>
+<script>
+/* ======================================================================
+   경량 SVG 차트 엔진 (외부 라이브러리 미사용 - 프로토타입 자체 구현)
+   ====================================================================== */
+(function(global){
+  "use strict";
+  const SVGNS = "http://www.w3.org/2000/svg";
+
+  function el(tag, attrs, children){
+    const e = document.createElementNS(SVGNS, tag);
+    if(attrs) for(const k in attrs){ if(attrs[k] !== undefined && attrs[k] !== null) e.setAttribute(k, attrs[k]); }
+    if(children) children.forEach(c => c && e.appendChild(c));
+    return e;
+  }
+  function text(x, y, str, attrs){
+    const t = el("text", Object.assign({x, y}, attrs));
+    t.textContent = str;
+    return t;
+  }
+  function fmt1(v){ return (Math.round(v*10)/10).toFixed(1); }
+  function fmt0(v){ return Math.round(v).toString(); }
+  function clamp(v,lo,hi){ return Math.max(lo, Math.min(hi, v)); }
+
+  function scaleLinear(domain, range){
+    const [d0, d1] = domain, [r0, r1] = range;
+    const k = (r1 - r0) / (d1 - d0 || 1);
+    return function(v){ return r0 + (v - d0) * k; };
+  }
+  function scaleBand(domainArr, range, paddingRatio){
+    paddingRatio = paddingRatio === undefined ? 0.28 : paddingRatio;
+    const [r0, r1] = range;
+    const n = domainArr.length;
+    const step = (r1 - r0) / Math.max(1, n);
+    const bw = step * (1 - paddingRatio);
+    const map = {};
+    domainArr.forEach((d,i) => { map[d] = r0 + step * i + (step - bw)/2; });
+    return { pos: (d) => map[d], bandwidth: bw, step };
+  }
+
+  /* -------- shared tooltip -------- */
+  let tooltipEl = null;
+  function ensureTooltip(){
+    if(tooltipEl) return tooltipEl;
+    tooltipEl = document.createElement("div");
+    tooltipEl.className = "tooltip";
+    document.body.appendChild(tooltipEl);
+    return tooltipEl;
+  }
+  function showTooltip(clientX, clientY, html){
+    const t = ensureTooltip();
+    t.innerHTML = html;
+    t.style.left = clientX + "px";
+    t.style.top = (clientY - 10) + "px";
+    t.classList.add("show");
+  }
+  function hideTooltip(){ if(tooltipEl) tooltipEl.classList.remove("show"); }
+
+  /* -------- color scales -------- */
+  function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+  function hexMix(hexA, hexB, t){
+    const a = hexA.match(/\w\w/g).map(x => parseInt(x,16));
+    const b = hexB.match(/\w\w/g).map(x => parseInt(x,16));
+    const c = a.map((v,i) => Math.round(v + (b[i]-v)*t));
+    return "#" + c.map(v => v.toString(16).padStart(2,"0")).join("");
+  }
+  function sequentialWarnColor(t, dark){
+    // 0(안전) -> light surface tint, 1(취약) -> 강한 오렌지, 단일 색상(오렌지) 램프
+    // 디자인 시스템 가이드 3장 "위험도·초과 현황" 지도 색상 규칙: #fde3d3 -> #8f3814
+    t = clamp(t, 0, 1);
+    const light0 = "#fbe6e1", light1 = "#8f2409";
+    const dark0 = "#2b1c12", dark1 = "#f2a35f";
+    return dark ? hexMix(dark0, dark1, t) : hexMix(light0, light1, t);
+  }
+  function vulnerabilityColor(v, lo, hi, dark){
+    // 값이 낮을수록(취약) 진한 오렌지, 높을수록(양호) 옅은 색 — 단일 색상 위험도 램프
+    const t = 1 - clamp((v - lo) / ((hi - lo) || 1), 0, 1);
+    return sequentialWarnColor(t, dark);
+  }
+  function sequentialAccentColor(t, dark){
+    // 0(낮음) -> 옅은 파랑, 1(높음) -> 강한 파랑(#2a78d6) — 지도 전용 단일 색상(파랑) 램프
+    t = clamp(t, 0, 1);
+    const light0 = "#e3e9f1", light1 = "#063a74";
+    const dark0 = "#12233d", dark1 = "#7fb2e8";
+    return dark ? hexMix(dark0, dark1, t) : hexMix(light0, light1, t);
+  }
+  function readinessColor(v, lo, hi, dark){
+    // 히트맵과 동일한 발산형 램프(취약=레드 ~ 중립 ~ 양호=네이비)를 공유한다
+    const t = clamp((v - lo) / ((hi - lo) || 1), 0, 1);
+    return divergingScoreColor(t, dark);
+  }
+  function sequentialTealColor(t, dark){
+    // 0(양호) -> 옅은 청록, 1(취약) -> 진한 청록 — 지도(파랑)·등급(녹/주황/빨강)·유형(보라)과
+    // 겹치지 않는 별도 색상(teal) 램프.
+    t = clamp(t, 0, 1);
+    const light0 = "#e3efe6", light1 = "#1f6b30";
+    const dark0 = "#0d2b2a", dark1 = "#5fd6cf";
+    return dark ? hexMix(dark0, dark1, t) : hexMix(light0, light1, t);
+  }
+  function divergingScoreColor(t, dark){
+    // 0(취약) <- 웜(레드) - 중립 회색(0.5) - 쿨(청록) -> 1(양호)
+    // 단일 색상 램프보다 명암 대비를 크게 벌려 셀 간 구별을 쉽게 하는 발산형(diverging) 램프.
+    // 히트맵 전용 — 등급 배지의 crit 레드와 톤을 맞추되, 중립 지점에서 카드 표면색으로 수렴한다.
+    t = clamp(t, 0, 1);
+    if(dark){
+      const warm = "#e2685f", neutral = "#20262f", cool = "#4fd6cb";
+      return t <= 0.5 ? hexMix(warm, neutral, t/0.5) : hexMix(neutral, cool, (t-0.5)/0.5);
+    }
+    const warm = "#b3290f", neutral = "#e9ebed", cool = "#063a74";
+    return t <= 0.5 ? hexMix(warm, neutral, t/0.5) : hexMix(neutral, cool, (t-0.5)/0.5);
+  }
+  function isDarkMode(){
+    const stamp = document.documentElement.getAttribute("data-theme");
+    return false; // 디자인 B는 라이트(회색조 행정형) 전용
+    void stamp;
+  }
+
+  function clearNode(node){ while(node.firstChild) node.removeChild(node.firstChild); }
+
+  /* -------- donut / pie chart -------- */
+  function polarToXY(cx, cy, r, angleDeg){
+    const a = (angleDeg - 90) * Math.PI / 180;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  }
+  function donutSlicePath(cx, cy, rOuter, rInner, startDeg, endDeg){
+    // 부동소수 오차로 360deg 풀서클이 되는 것을 방지 (0.001deg 여유)
+    const span = Math.min(endDeg - startDeg, 359.999);
+    const largeArc = span > 180 ? 1 : 0;
+    const p1 = polarToXY(cx, cy, rOuter, startDeg);
+    const p2 = polarToXY(cx, cy, rOuter, startDeg + span);
+    const p3 = polarToXY(cx, cy, rInner, startDeg + span);
+    const p4 = polarToXY(cx, cy, rInner, startDeg);
+    return `M ${p1[0].toFixed(2)} ${p1[1].toFixed(2)} A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${p2[0].toFixed(2)} ${p2[1].toFixed(2)} L ${p3[0].toFixed(2)} ${p3[1].toFixed(2)} A ${rInner} ${rInner} 0 ${largeArc} 0 ${p4[0].toFixed(2)} ${p4[1].toFixed(2)} Z`;
+  }
+  /**
+   * segments: [{label, value, color}], value>=0. 합이 0이면 빈 트랙만 표시.
+   * opts: {size, thickness, centerTop, centerBottom, onHoverHtml(seg,total), onClick(seg)}
+   */
+  function donutChart(container, segments, opts){
+    opts = opts || {};
+    clearNode(container);
+    const size = opts.size || Math.min(container.clientWidth || 160, container.clientHeight || 160);
+    const cx = size / 2, cy = size / 2;
+    const rOuter = size / 2 - (opts.pad === undefined ? 3 : opts.pad);
+    const thickness = opts.thickness || rOuter * 0.42;
+    const rInner = rOuter - thickness;
+    const total = segments.reduce((s, seg) => s + (seg.value || 0), 0);
+
+    const svg = el("svg", { width: size, height: size, viewBox: `0 0 ${size} ${size}` });
+    if(total <= 0){
+      svg.appendChild(el("circle", { cx, cy, r: (rOuter + rInner) / 2, fill: "none", stroke: "var(--border-strong)", "stroke-width": thickness }));
+    } else {
+      let acc = 0;
+      segments.forEach(seg => {
+        if(!seg.value){ return; }
+        const startDeg = acc / total * 360;
+        acc += seg.value;
+        const endDeg = acc / total * 360;
+        // 한 구간이 100%인 경우 arc 시작·끝점이 같아져 path가 그려지지 않으므로 링(circle)으로 대체
+        const path = (endDeg - startDeg) >= 359.9
+          ? el("circle", { cx, cy, r:(rOuter + rInner) / 2, fill:"none", stroke: seg.color, "stroke-width": thickness })
+          : el("path", { d: donutSlicePath(cx, cy, rOuter, rInner, startDeg, endDeg), fill: seg.color });
+        if(opts.onHoverHtml){
+          path.style.cursor = "pointer";
+          path.addEventListener("mousemove", (ev) => showTooltip(ev.clientX, ev.clientY, opts.onHoverHtml(seg, total)));
+          path.addEventListener("mouseleave", hideTooltip);
+        }
+        if(opts.onClick){ path.style.cursor = "pointer"; path.addEventListener("click", () => opts.onClick(seg)); }
+        svg.appendChild(path);
+      });
+    }
+    if(opts.centerTop !== undefined || opts.centerBottom !== undefined){
+      if(opts.centerTop !== undefined) svg.appendChild(text(cx, cy - 4, opts.centerTop, { "text-anchor":"middle", "font-size":9.5, fill:"var(--text-muted)", "font-weight":700 }));
+      if(opts.centerBottom !== undefined) svg.appendChild(text(cx, cy + 11, opts.centerBottom, { "text-anchor":"middle", "font-size":14, fill:"#063a74", "font-weight":700 }));
+    }
+    container.appendChild(svg);
+    return svg;
+  }
+
+  /* 컨테이너 크기가 0으로 측정되던 최초 렌더 문제 해결:
+     ResizeObserver로 실제 크기가 확정/변경되면 동일 차트를 다시 그린다. */
+  function autoDraw(container, draw){
+    draw();
+    if(container.__omRO){ container.__omRO.disconnect(); }
+    let last = container.clientWidth + "x" + container.clientHeight;
+    const ro = new ResizeObserver(function(){
+      const cur = container.clientWidth + "x" + container.clientHeight;
+      if(cur !== last && container.clientWidth > 0 && container.clientHeight > 0){
+        last = cur; draw();
+      }
+    });
+    ro.observe(container);
+    container.__omRO = ro;
+  }
+
+  global.CH = {
+    el, text, autoDraw, fmt1, fmt0, clamp, scaleLinear, scaleBand,
+    showTooltip, hideTooltip, sequentialWarnColor, vulnerabilityColor,
+    sequentialAccentColor, readinessColor, sequentialTealColor, divergingScoreColor, isDarkMode,
+    cssVar, clearNode, donutChart, SVGNS,
+  };
+})(window);
+</script>
+<script>
+/* ======================================================================
+   앱 상태 / 필터 / 탭 / 공통 렌더링
+   ====================================================================== */
+(function(){
+  "use strict";
+  const D = window.KERIS_DATA;
+  const { el, text, fmt1, fmt0, clamp, scaleLinear, scaleBand,
+          showTooltip, hideTooltip, sequentialWarnColor,
+          isDarkMode, cssVar, clearNode } = window.CH;
+
+  const REGION_ALL = "전체", LEVEL_ALL = "전체", CLUSTER_ALL = "전체";
+  const CLUSTER_OPTS = [
+    { v:"전체", label:"전체" },
+    { v:"A", label:"유형 A · 준비 우수형" },
+    { v:"B", label:"유형 B · 인프라 취약형" },
+    { v:"C", label:"유형 C · 활용 취약형" },
+    { v:"D", label:"유형 D · 종합 취약형" },
+  ];
+  const CLUSTER_COLOR_VAR = { A:"--cluster-a", B:"--cluster-b", C:"--cluster-c", D:"--cluster-d" };
+  const CLUSTER_SHAPE = { A:"circle", B:"square", C:"triangle", D:"diamond" };
+
+  const STATE = {
+    screen: 1,
+    year: D.LATEST_YEAR,
+    region: REGION_ALL,
+    level: LEVEL_ALL,
+    clusterType: CLUSTER_ALL,
+    selectedSchoolId: null,
+  };
+
+  /* ---------------- data helpers ---------------- */
+  function yearRows(year){ return D.byYear[year || STATE.year]; }
+
+  function baseRows(opts){
+    opts = opts || {};
+    const respectRegion = opts.respectRegion !== false;
+    let rows = yearRows();
+    if(STATE.level !== LEVEL_ALL) rows = rows.filter(r => r.school_level === STATE.level);
+    if(respectRegion && STATE.region !== REGION_ALL) rows = rows.filter(r => r.region === STATE.region);
+    return rows;
+  }
+
+  function focusRows(){
+    return baseRows({respectRegion:true});
+  }
+
+  function avg(arr, key){ return arr.length ? arr.reduce((s,r) => s + r[key], 0) / arr.length : 0; }
+
+  function regionAgg(rows){
+    const map = {};
+    D.REGIONS.forEach(rg => { map[rg] = { region: rg, rows: [] }; });
+    rows.forEach(r => { if(map[r.region]) map[r.region].rows.push(r); });
+    D.REGIONS.forEach(rg => {
+      const rs = map[rg].rows;
+      map[rg].avgReadiness = avg(rs, "readiness_index");
+      map[rg].avgInfra = avg(rs, "infrastructure_index");
+      map[rg].avgUtil = avg(rs, "utilization_index");
+      map[rg].count = rs.length;
+      const gc = {"상":0,"중":0,"하":0};
+      rs.forEach(r => gc[r.readiness_grade]++);
+      map[rg].gradeCounts = gc;
+      const cc = {A:0,B:0,C:0,D:0};
+      rs.forEach(r => cc[r.cluster_id]++);
+      map[rg].clusterCounts = cc;
+    });
+    return map;
+  }
+
+  /* ---------------- 화면 탭 + 페이지 타이틀 ---------------- */
+  const SCREENS = [
+    { id:1, label:"디지털교육 준비도 현황 및 취약진단",
+      sub:"지역 및 학교별 디지털교육 준비도와 취약요인을 한눈에 확인하고 개선 우선순위를 파악합니다." },
+    { id:2, label:"유사 학교군 유형 분석",
+      sub:"디지털교육 인프라와 활용 특성이 유사한 학교를 유형화하여 학교군별 특성과 개선 방향을 비교합니다. <span class=\"note-inline\">※ 유형명은 분석 결과에 따라 변경될 수 있습니다.</span>" },
+  ];
+  function renderPageHead(){
+    const wrap = document.getElementById("pagehead");
+    if(!wrap) return;
+    clearNode(wrap);
+    const s = SCREENS.find(x => x.id === STATE.screen);
+    if(!s) return;
+    const h1 = document.createElement("h1"); h1.textContent = s.label;
+    const p = document.createElement("p"); p.innerHTML = s.sub;
+    wrap.appendChild(h1); wrap.appendChild(p);
+  }
+  function renderTabs(){
+    const wrap = document.getElementById("tabs");
+    clearNode(wrap);
+    SCREENS.forEach(s => {
+      const b = document.createElement("button");
+      b.className = "tab" + (STATE.screen === s.id ? " active" : "");
+      b.setAttribute("role","tab");
+      b.innerHTML = `<span class="num">${s.id}</span><span>${s.label}</span>`;
+      b.addEventListener("click", () => { STATE.screen = s.id; renderAll(); });
+      wrap.appendChild(b);
+    });
+  }
+
+  /* ---------------- filter bar ---------------- */
+  function makeSelect(labelText, options, value, onChange){
+    const g = document.createElement("div");
+    g.className = "fgroup";
+    const lab = document.createElement("label");
+    lab.textContent = labelText;
+    const sel = document.createElement("select");
+    options.forEach(opt => {
+      const v = typeof opt === "string" ? opt : opt.v;
+      const l = typeof opt === "string" ? opt : opt.label;
+      const o = document.createElement("option");
+      o.value = v; o.textContent = l;
+      if(v === value) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.addEventListener("change", () => onChange(sel.value));
+    g.appendChild(lab); g.appendChild(sel);
+    return g;
+  }
+
+  function resetFilters(){
+    STATE.region = REGION_ALL; STATE.level = LEVEL_ALL; STATE.year = D.LATEST_YEAR;
+    STATE.clusterType = CLUSTER_ALL;
+    STATE.selectedSchoolId = null;
+    renderAll();
+  }
+
+  function renderFilterBar(){
+    const wrap = document.getElementById("filterbar");
+    clearNode(wrap);
+
+    wrap.appendChild(makeSelect("기준연도", D.YEARS.slice().reverse().map(y => ({v:String(y), label:y+"년"})), String(STATE.year), v => { STATE.year = Number(v); renderAll(); }));
+
+    if(STATE.screen === 1){
+      wrap.appendChild(makeSelect("시군", [REGION_ALL, ...D.REGIONS], STATE.region, v => { STATE.region = v; renderAll(); }));
+    }
+    wrap.appendChild(makeSelect("학교급", [LEVEL_ALL, ...D.SCHOOL_LEVELS], STATE.level, v => { STATE.level = v; renderAll(); }));
+
+    if(STATE.screen === 2){
+      wrap.appendChild(makeSelect("학교군 유형", CLUSTER_OPTS, STATE.clusterType, v => { STATE.clusterType = v; renderAll(); }));
+    }
+
+    const spacer = document.createElement("div"); spacer.className = "fspacer";
+    wrap.appendChild(spacer);
+
+    const resetBtn = document.createElement("button");
+    resetBtn.className = "icon-reset";
+    resetBtn.setAttribute("aria-label", "전체 필터 초기화");
+    resetBtn.title = "전체 초기화";
+    resetBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>`;
+    resetBtn.addEventListener("click", resetFilters);
+    wrap.appendChild(resetBtn);
+  }
+
+  /* ---------------- generic KPI + panel builders ---------------- */
+  function kpiCard(tone, label, valueHtml, subHtml){
+    const c = document.createElement("div");
+    c.className = "kpi" + (tone ? " tone-" + tone : "");
+    c.innerHTML = `<div class="klabel">${label}</div><div class="kval">${valueHtml}</div>${subHtml ? `<div class="ksub">${subHtml}</div>` : ""}`;
+    return c;
+  }
+  function panel(opts){
+    // opts: {title, desc, tools(node), className}
+    const p = document.createElement("div");
+    p.className = "panel" + (opts.className ? " " + opts.className : "");
+    const head = document.createElement("div"); head.className = "panel-head";
+    const left = document.createElement("div");
+    left.innerHTML = `<div class="panel-title">${opts.title}</div>` + (opts.desc ? `<div class="panel-desc">${opts.desc}</div>` : "");
+    head.appendChild(left);
+    if(opts.tools){ const t = document.createElement("div"); t.className = "panel-tools"; t.appendChild(opts.tools); head.appendChild(t); }
+    p.appendChild(head);
+    if(!opts.desc){ const gap = document.createElement("div"); gap.style.height="6px"; p.appendChild(gap); }
+    const body = document.createElement("div"); body.className = "chart-wrap"; body.id = opts.bodyId || "";
+    p.appendChild(body);
+    return { root: p, body };
+  }
+  function segControl(options, value, onChange){
+    const wrap = document.createElement("div"); wrap.className = "seg";
+    options.forEach(opt => {
+      const b = document.createElement("button");
+      b.textContent = opt.label; b.className = opt.v === value ? "on" : "";
+      b.addEventListener("click", () => onChange(opt.v));
+      wrap.appendChild(b);
+    });
+    return wrap;
+  }
+
+  window.APP = {
+    D, STATE, REGION_ALL, LEVEL_ALL, CLUSTER_ALL,
+    CLUSTER_OPTS, CLUSTER_COLOR_VAR, CLUSTER_SHAPE,
+    yearRows, baseRows, focusRows, avg, regionAgg,
+    renderTabs, renderPageHead, renderFilterBar, kpiCard, panel, segControl,
+  };
+
+  window.renderAll = function renderAll(){
+    APP.renderPageHead();
+    document.getElementById("tabs") && APP.renderTabs();
+    APP.renderFilterBar();
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    const active = document.getElementById("screen-" + STATE.screen);
+    if(active) active.classList.add("active");
+    // 처음 방문하는 화면은 아직 DOM에 없으므로, 각 renderScreenN 내부의
+    // buildScreenShell()이 생성 시점에 스스로 active 클래스를 부여한다
+    // (측정을 위해 렌더링 시점에 반드시 화면이 보이는 상태여야 함).
+    if(STATE.screen === 1 && window.renderScreen1) window.renderScreen1();
+    if(STATE.screen === 2 && window.renderScreen2) window.renderScreen2();
+  };
+})();
+</script>
+<script>
+/* ======================================================================
+   화면 1. 디지털교육 준비도 현황 및 취약진단
+   ====================================================================== */
+(function(){
+  "use strict";
+  const A = window.APP, D = A.D, STATE = A.STATE;
+  const { el, text, fmt1, fmt0, clamp, scaleLinear, scaleBand,
+          showTooltip, hideTooltip, sequentialWarnColor, vulnerabilityColor,
+          sequentialAccentColor, readinessColor, sequentialTealColor, divergingScoreColor,
+          isDarkMode, cssVar, clearNode, donutChart, autoDraw, SVGNS } = window.CH;
+
+  function buildScreenShell(){
+    const root = document.createElement("div");
+    root.className = "screen active"; root.id = "screen-1";
+    root.innerHTML = `
+      <div class="kpirow" id="s1-kpi"></div>
+      <div class="row s1-top" id="s1-top"></div>
+      <div id="s1-bottom"></div>
+    `;
+    document.getElementById("screens").appendChild(root);
+  }
+
+  /* ---------------- KPI 5종 ---------------- */
+  function computeKPI(){
+    const compareRows = A.baseRows({respectRegion:false}); // 학교급만 반영, 지역 전체(경북) 기준
+    const focusRows = A.focusRows();                       // 학교급 + 선택 지역 반영
+
+    const focusLabel = STATE.region === A.REGION_ALL ? "경북 전체 평균" : STATE.region + " 평균";
+    const readiness = A.avg(focusRows, "readiness_index");
+    const infra = A.avg(focusRows, "infrastructure_index");
+    const util = A.avg(focusRows, "utilization_index");
+
+    const lowCount = focusRows.filter(r => r.readiness_grade === "하").length;
+    const lowPct = focusRows.length ? (lowCount / focusRows.length * 100) : 0;
+
+    let compareMain, compareSub, compareTone;
+    if(STATE.region === A.REGION_ALL){
+      const regAgg = A.regionAgg(compareRows);
+      const entries = D.REGIONS.map(r => regAgg[r]).filter(e => e.count > 0);
+      if(entries.length >= 2){
+        const sorted = entries.slice().sort((a,b) => a.avgReadiness - b.avgReadiness);
+        const worst = sorted[0], best = sorted[sorted.length - 1];
+        const gap = best.avgReadiness - worst.avgReadiness;
+        compareMain = fmt1(gap) + "점";
+        compareSub = `최고 ${best.region} ${fmt1(best.avgReadiness)} · 최저 ${worst.region} ${fmt1(worst.avgReadiness)}`;
+        compareTone = "warn";
+      } else {
+        compareMain = "-"; compareSub = "비교할 지역 데이터가 부족합니다"; compareTone = null;
+      }
+    } else {
+      const allAvg = A.avg(compareRows, "readiness_index");
+      const gap = readiness - allAvg;
+      const sign = gap >= 0 ? "+" : "";
+      compareMain = sign + fmt1(gap) + "점";
+      compareSub = `경북 평균 대비 · ${STATE.region} ${fmt1(readiness)} / 경북 ${fmt1(allAvg)}`;
+      compareTone = gap >= 0 ? "good" : "crit";
+    }
+
+    return {
+      focusLabel, readiness, infra, util,
+      lowCount, lowPct, totalSchools: focusRows.length,
+      compareMain, compareSub, compareTone, compareLabel: STATE.region === A.REGION_ALL ? "경북 지역 간 격차" : "경북 평균 대비",
+      focusRows, compareRows,
+    };
+  }
+
+  function renderKPI(k){
+    const wrap = document.getElementById("s1-kpi");
+    clearNode(wrap);
+    wrap.appendChild(A.kpiCard("accent", "디지털교육 준비도 지수", fmt1(k.readiness), k.focusLabel));
+    wrap.appendChild(A.kpiCard(null, "인프라 지수", fmt1(k.infra), "기기·네트워크 종합"));
+    wrap.appendChild(A.kpiCard(null, "활용도 지수", fmt1(k.util), "AIDT·원패스·연수 종합"));
+    wrap.appendChild(A.kpiCard("crit", "준비도 하위 학교", `${fmt1(k.lowPct)}<span class="unit">%</span>`, `${k.lowCount}개교 / 전체 ${k.totalSchools}개교 · 등급 &#39;하&#39;`));
+    wrap.appendChild(A.kpiCard(k.compareTone, k.compareLabel, k.compareMain, k.compareSub));
+  }
+
+  /* ---------------- 1열: 지역별 준비도 지도 ---------------- */
+  function selectRegion(name){
+    STATE.region = (STATE.region === name) ? A.REGION_ALL : name;
+    window.renderAll();
+  }
+
+  function renderMap(container, regAgg, values){
+    clearNode(container);
+    const md = window.GB_MAP_DATA;
+    const w = container.clientWidth || 480, h = container.clientHeight || 300;
+    const pad = 6;
+
+    // 울릉도는 본토에서 멀리 떨어진 실제 지리 특성상 동일 축척으로 그리면
+    // 본토가 지나치게 작아지므로, 실제 위치 대신 별도의 인셋 박스로 표시한다.
+    const mb = md.mainBounds; // [minx, miny, maxx, maxy] - 울릉 제외 본토 범위
+    const mbW = mb[2]-mb[0], mbH = mb[3]-mb[1];
+    const scale = Math.min((w - pad*2) / mbW, (h - pad*2 - 20) / mbH);
+    const offX = (w - mbW*scale)/2 - mb[0]*scale, offY = (h - 20 - mbH*scale)/2 + 2 - mb[1]*scale;
+
+    const svg = el("svg", { width:w, height:h, viewBox:`0 0 ${w} ${h}` });
+    const g = el("g", { transform:`translate(${offX},${offY}) scale(${scale})` });
+
+    const vals = values.filter(v => v !== null && v !== undefined);
+    const lo = Math.min(...vals), hi = Math.max(...vals);
+
+    function addRegion(parentG, region, d){
+      const info = regAgg[region];
+      const val = info.count ? info.avgReadiness : null;
+      const fill = val === null ? cssVar("--border-strong") : readinessColor(val, lo, hi, isDarkMode());
+      const path = el("path", {
+        d, class:"gbmap-region" + (STATE.region === region ? " selected" : ""), fill, "data-region": region,
+      });
+      path.addEventListener("click", () => selectRegion(region));
+      path.addEventListener("mousemove", (ev) => {
+        showTooltip(ev.clientX, ev.clientY, `<b>${region}</b><div class="trow"><span class="tmuted">준비도</span><span>${val===null?"-":fmt1(val)}</span></div><div class="trow"><span class="tmuted">학교 수</span><span>${info.count}개교</span></div>`);
+      });
+      path.addEventListener("mouseleave", hideTooltip);
+      parentG.appendChild(path);
+    }
+
+    D.REGIONS.forEach(region => {
+      if(region === "울릉") return;
+      const d = md.paths[region];
+      if(!d) return;
+      addRegion(g, region, d);
+    });
+    D.REGIONS.forEach(region => {
+      if(region === "울릉") return;
+      const c = md.centroids[region];
+      if(!c) return;
+      const info = regAgg[region];
+      g.appendChild(text(c[0], c[1]-2.6, region, { class:"gbmap-label" }));
+      g.appendChild(text(c[0], c[1]+6.6, info.count ? fmt1(info.avgReadiness) : "-", { class:"gbmap-val" }));
+    });
+    svg.appendChild(g);
+
+    // ---- 울릉도 인셋 (좌상단 고정 박스, 실제 좌표 대신 별도 축척) ----
+    const ub = md.ulleungBounds;
+    const insetW = 46, insetH = 34, insetX = 8, insetY = 8;
+    const ubW = ub[2]-ub[0], ubH = ub[3]-ub[1];
+    const uScale = Math.min((insetW-8)/ubW, (insetH-14)/ubH);
+    const uOffX = insetX + (insetW-8-ubW*uScale)/2 + 4 - ub[0]*uScale;
+    const uOffY = insetY + (insetH-14-ubH*uScale)/2 + 3 - ub[1]*uScale;
+    svg.appendChild(el("rect", { x:insetX, y:insetY, width:insetW, height:insetH, rx:0, fill:"var(--bg-surface-2)", stroke:"var(--border-strong)", "stroke-width":1, "stroke-dasharray":"2,2" }));
+    const ug = el("g", { transform:`translate(${uOffX},${uOffY}) scale(${uScale})` });
+    addRegion(ug, "울릉", md.paths["울릉"]);
+    svg.appendChild(ug);
+    const uInfo = regAgg["울릉"];
+    svg.appendChild(text(insetX+insetW/2, insetY+insetH-4, "울릉 " + (uInfo.count?fmt1(uInfo.avgReadiness):"-"), { class:"gbmap-val", "text-anchor":"middle", "font-size":7 }));
+
+    container.appendChild(svg);
+  }
+
+  function renderMapLegend(container, lo, hi){
+    clearNode(container);
+    const dark = isDarkMode();
+    const STEP_N = 6;
+    const row = document.createElement("div"); row.className = "legend-line";
+    row.innerHTML = `<span class="legend-item"><b style="color:${divergingScoreColor(0, dark)}">하위(취약)</b></span>`;
+    const grad = document.createElement("div");
+    grad.style.cssText = "display:flex; height:9px; width:150px; border-radius:0; overflow:hidden; border:1px solid var(--border-strong);";
+    for(let i=0;i<STEP_N;i++){
+      // 왼쪽(하위/취약)일수록 옅은 파랑, 오른쪽(상위/양호)일수록 진한 파랑(#2a78d6)
+      const t = i/(STEP_N-1);
+      const seg = document.createElement("div");
+      seg.style.cssText = `flex:1; background:${divergingScoreColor(t, dark)};`;
+      grad.appendChild(seg);
+    }
+    row.appendChild(grad);
+    const hiSpan = document.createElement("span"); hiSpan.className = "legend-item"; hiSpan.innerHTML = `<b style="color:${divergingScoreColor(1, dark)}">상위(양호)</b>`;
+    row.appendChild(hiSpan);
+    const range = document.createElement("span"); range.className = "legend-item"; range.style.marginLeft="auto";
+    range.innerHTML = `<span class="tmuted" style="color:var(--text-muted)">${fmt1(lo)} ~ ${fmt1(hi)}점</span>`;
+    row.appendChild(range);
+    container.appendChild(row);
+  }
+
+  /* ---------------- 2열 상단: 선택 지역 준비도 등급 분포 (Donut) ---------------- */
+  const GRADE_ORDER = [
+    { key:"상", colorVar:"--good" },
+    { key:"중", colorVar:"--warn" },
+    { key:"하", colorVar:"--crit" },
+  ];
+  function renderGradeDonut(canvasEl, legendEl, rows){
+    clearNode(legendEl);
+    const counts = {"상":0,"중":0,"하":0};
+    rows.forEach(r => counts[r.readiness_grade]++);
+    const total = rows.length;
+    const segments = GRADE_ORDER.map(g => ({ label:g.key, value:counts[g.key], color:cssVar(g.colorVar) }));
+    donutChart(canvasEl, segments, {
+      centerTop:"전체",
+      centerBottom: fmt0(total) + "개교",
+      onHoverHtml: (seg, tot) => `<b>${seg.label} 등급</b><div class="trow"><span class="tmuted">학교 수</span><span>${seg.value}개교</span></div><div class="trow"><span class="tmuted">비율</span><span>${tot ? fmt1(seg.value/tot*100) : 0}%</span></div>`,
+    });
+    GRADE_ORDER.forEach(g => {
+      const cnt = counts[g.key];
+      const pct = total ? fmt1(cnt/total*100) : "0.0";
+      const row = document.createElement("div"); row.className = "dl-row";
+      row.innerHTML = `<span class="dl-swatch" style="background:${cssVar(g.colorVar)}"></span><span class="dl-label">${g.key}</span><span class="dl-count">${cnt}개교 · ${pct}%</span>`;
+      legendEl.appendChild(row);
+    });
+  }
+
+  /* ---------------- 인프라x활용도 패널 내 산점도 ---------------- */
+  function renderScatter(container, rows, meanInfra, meanUtil){
+    clearNode(container);
+    const w = container.clientWidth || 480, h = container.clientHeight || 300;
+    const m = { l:34, r:14, t:12, b:26 };
+    const plotW = w - m.l - m.r, plotH = h - m.t - m.b;
+    const x = scaleLinear([0,100],[0,plotW]);
+    const y = scaleLinear([0,100],[plotH,0]);
+
+    const svg = el("svg", { width:w, height:h, viewBox:`0 0 ${w} ${h}` });
+    const g = el("g", { transform:`translate(${m.l},${m.t})` });
+    [0,25,50,75,100].forEach(t => {
+      g.appendChild(el("line", { x1:x(t),x2:x(t),y1:0,y2:plotH, class:"grid-line" }));
+      g.appendChild(el("line", { x1:0,x2:plotW,y1:y(t),y2:y(t), class:"grid-line" }));
+      g.appendChild(text(x(t), plotH+13, t, { class:"axis-label","text-anchor":"middle" }));
+      g.appendChild(text(-6, y(t)+3, t, { class:"axis-label","text-anchor":"end" }));
+    });
+    g.appendChild(text(plotW/2, plotH+23, "인프라 지수 →", { class:"axis-label","text-anchor":"middle", "font-weight":700 }));
+    const ylab = text(-26, plotH/2, "활용도 지수 →", { class:"axis-label","text-anchor":"middle","font-weight":700 });
+    ylab.setAttribute("transform", `rotate(-90, -26, ${plotH/2})`);
+    g.appendChild(ylab);
+
+    // 평균 기준선
+    g.appendChild(el("line", { x1:x(meanInfra),x2:x(meanInfra),y1:0,y2:plotH, stroke:"var(--text-muted)", "stroke-width":1.2, "stroke-dasharray":"4,3" }));
+    g.appendChild(el("line", { x1:0,x2:plotW,y1:y(meanUtil),y2:y(meanUtil), stroke:"var(--text-muted)", "stroke-width":1.2, "stroke-dasharray":"4,3" }));
+
+    // 사분면 라벨
+    const qlabels = [
+      { x: x(75), y: 12, t:"준비 우수", anchor:"middle" },
+      { x: x(25), y: 12, t:"인프라 개선 필요", anchor:"middle" },
+      { x: x(75), y: plotH-6, t:"활용 활성화 필요", anchor:"middle" },
+      { x: x(25), y: plotH-6, t:"집중 개선 필요", anchor:"middle" },
+    ];
+    qlabels.forEach(q => g.appendChild(text(q.x, q.y, q.t, { class:"axis-label", "text-anchor":q.anchor, fill:"var(--text-muted)", "font-weight":700 })));
+
+    const gradeColorVar = { "상":"--good", "중":"--warn", "하":"--crit" };
+    rows.forEach(r => {
+      const cx = x(r.infrastructure_index), cy = y(r.utilization_index);
+      const c = el("circle", { cx, cy, r:3.6, fill:cssVar(gradeColorVar[r.readiness_grade]), opacity:0.78, stroke:"var(--bg-surface)", "stroke-width":1 });
+      c.addEventListener("mousemove", (ev) => showTooltip(ev.clientX, ev.clientY,
+        `<b>${r.school_name}</b>` +
+        `<div class="trow"><span class="tmuted">지역</span><span>${r.region}</span></div>` +
+        `<div class="trow"><span class="tmuted">학교급</span><span>${r.school_level}</span></div>` +
+        `<div class="trow"><span class="tmuted">준비도지수</span><span>${fmt1(r.readiness_index)}</span></div>` +
+        `<div class="trow"><span class="tmuted">인프라지수</span><span>${fmt1(r.infrastructure_index)}</span></div>` +
+        `<div class="trow"><span class="tmuted">활용도지수</span><span>${fmt1(r.utilization_index)}</span></div>` +
+        `<div class="trow"><span class="tmuted">준비도등급</span><span>${r.readiness_grade}</span></div>`
+      ));
+      c.addEventListener("mouseleave", hideTooltip);
+      g.appendChild(c);
+    });
+    svg.appendChild(g);
+    container.appendChild(svg);
+    if(!rows.length){
+      const en = document.createElement("div"); en.className = "empty-note"; en.textContent = "선택한 조건에 해당하는 학교가 없습니다.";
+      container.appendChild(en);
+    }
+  }
+
+  /* ---------------- 3열 하단: 학교별 취약지표 분포 히트맵 ---------------- */
+  const HEAT_COLS = [
+    { key:"devices", label:"디지털기기 보급률" },
+    { key:"aging", label:"기기 노후화율" },
+    { key:"network", label:"네트워크 속도" },
+    { key:"aidt", label:"AI디지털교과서 채택률" },
+    { key:"onepass", label:"디지털 원패스 가입률" },
+    { key:"train", label:"디지털 연수 이수율" },
+  ];
+  function heatCellTextColor(hex){
+    const m = hex.match(/\w\w/g);
+    if(!m) return "#1e2124";
+    const rgb = m.map(x => parseInt(x,16));
+    const lum = (0.299*rgb[0] + 0.587*rgb[1] + 0.114*rgb[2]) / 255;
+    return lum > 0.55 ? "#1e2124" : "#ffffff";
+  }
+  function renderHeatmap(container, rows, showAll){
+    clearNode(container);
+    const sorted = rows.slice().sort((a,b)=>a.priority_rank-b.priority_rank);
+    const top = showAll ? sorted : sorted.slice(0,10);
+    const w = container.clientWidth || 420, h = container.clientHeight || 300;
+    const m = { l:176, r:26, t:28, b:12 };
+    const plotW = w - m.l - m.r;
+    const avail = Math.max(60, h - m.t - m.b);
+    const rowH = showAll ? 22 : Math.min(22, Math.max(12, avail / Math.max(1,top.length)));
+    const colW = plotW / HEAT_COLS.length;
+    const svgH = m.t + rowH*top.length + m.b;
+
+    const svg = el("svg", { width:w, height: svgH, viewBox:`0 0 ${w} ${svgH}` });
+    const g = el("g", { transform:`translate(${m.l},${m.t})` });
+    HEAT_COLS.forEach((c,i) => {
+      g.appendChild(text(i*colW + colW/2, -9, c.label, { class:"axis-label", "text-anchor":"middle", "font-weight":700, "font-size":12, fill:"var(--text-secondary)" }));
+    });
+    g.appendChild(text(-9, -9, "준비도", { class:"axis-label", "text-anchor":"end", "font-weight":700, "font-size":12, fill:"var(--text-secondary)" }));
+    top.forEach((r,ri) => {
+      g.appendChild(text(-52, ri*rowH + rowH/2 + 4, r.school_name, { class:"axis-label", "text-anchor":"end", "font-size":12.5, fill:"var(--text-primary)", "font-weight":500 }));
+      g.appendChild(text(-9, ri*rowH + rowH/2 + 4, fmt1(r.readiness_index), {
+        "text-anchor":"end", "font-size":12, "font-weight":700, fill:"#063a74",
+        style:"font-family:var(--font-mono);",
+      }));
+      HEAT_COLS.forEach((c,ci) => {
+        const score = r._sub[c.key];
+        const fill = divergingScoreColor(score/100, isDarkMode());
+        const rect = el("rect", { x:ci*colW+1, y:ri*rowH+1, width:colW-2, height:rowH-2, rx:0, fill });
+        rect.addEventListener("mousemove", (ev) => showTooltip(ev.clientX, ev.clientY, `<b>${r.school_name}</b><div class="trow"><span class="tmuted">${c.label}</span><span>${fmt1(score)}점</span></div>`));
+        rect.addEventListener("mouseleave", hideTooltip);
+        g.appendChild(rect);
+        g.appendChild(text(ci*colW + colW/2, ri*rowH + rowH/2 + 3.8, fmt0(score), {
+          "text-anchor":"middle", "font-size":11, "font-weight":700, fill: heatCellTextColor(fill), style:"pointer-events:none;",
+        }));
+      });
+    });
+    svg.appendChild(g);
+    container.appendChild(svg);
+    if(!top.length){
+      const en = document.createElement("div"); en.className = "empty-note"; en.textContent = "선택한 조건에 해당하는 학교가 없습니다.";
+      container.appendChild(en);
+    }
+  }
+
+  function renderHeatLegend(container){
+    clearNode(container);
+    const dark = isDarkMode();
+    const STEP_N = 9;
+    const warmColor = divergingScoreColor(0, dark);
+    const coolColor = divergingScoreColor(1, dark);
+    const row = document.createElement("div"); row.className = "legend-line";
+    row.innerHTML = `<span class="legend-item"><b style="color:${warmColor}">취약</b></span>`;
+    const grad = document.createElement("div");
+    grad.style.cssText = "display:flex; height:9px; width:150px; border-radius:0; overflow:hidden; border:1px solid var(--border-strong);";
+    for(let i=0;i<STEP_N;i++){
+      // 왼쪽(취약)일수록 빨강, 가운데는 중립 회색, 오른쪽(양호)일수록 청록
+      const t = i/(STEP_N-1);
+      const seg = document.createElement("div");
+      seg.style.cssText = `flex:1; background:${divergingScoreColor(t, dark)};`;
+      grad.appendChild(seg);
+    }
+    row.appendChild(grad);
+    const hiSpan = document.createElement("span"); hiSpan.className = "legend-item"; hiSpan.innerHTML = `<b style="color:${coolColor}">양호</b>`;
+    row.appendChild(hiSpan);
+    const scaleNote = document.createElement("span"); scaleNote.className = "legend-item"; scaleNote.style.marginLeft = "auto";
+    scaleNote.innerHTML = `<span class="tmuted" style="color:var(--text-muted)">0 ~ 100점</span>`;
+    row.appendChild(scaleNote);
+    container.appendChild(row);
+  }
+
+  /* ---------------- 하단: 개선 우선순위 학교 표 ---------------- */
+  function renderTable(container, rows){
+    clearNode(container);
+    const sorted = rows.slice().sort((a,b)=>a.priority_rank-b.priority_rank);
+    const wrap = document.createElement("div"); wrap.className = "tbl-scroll";
+    const table = document.createElement("table"); table.className = "datatable";
+    table.innerHTML = `<thead><tr>
+      <th>순위</th><th>학교명</th><th>지역</th><th>학교급</th>
+      <th style="text-align:right">준비도</th><th style="text-align:right">인프라</th><th style="text-align:right">활용도</th>
+      <th>등급</th><th>주요 취약영역</th><th style="text-align:right">취약지표 수</th>
+    </tr></thead>`;
+    const tbody = document.createElement("tbody");
+    sorted.forEach(r => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><span class="rank-pill">${r.priority_rank}</span></td>
+        <td>${r.school_name}</td>
+        <td>${r.region}</td>
+        <td>${r.school_level}</td>
+        <td class="num">${fmt1(r.readiness_index)}</td>
+        <td class="num">${fmt1(r.infrastructure_index)}</td>
+        <td class="num">${fmt1(r.utilization_index)}</td>
+        <td><span class="grade-pill grade-${r.readiness_grade}">${r.readiness_grade}</span></td>
+        <td>${r.main_vulnerability}</td>
+        <td class="num">${r.vulnerability_count}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    container.appendChild(wrap);
+    if(!sorted.length){
+      const en = document.createElement("div"); en.className = "empty-note"; en.textContent = "선택한 조건에 해당하는 학교가 없습니다.";
+      container.appendChild(en);
+    }
+  }
+
+  /* ---------------- assemble ---------------- */
+  window.renderScreen1 = function renderScreen1(){
+    if(!document.getElementById("screen-1")) buildScreenShell();
+
+    const k = computeKPI();
+    renderKPI(k);
+
+    const compareRows = k.compareRows;
+    const focusRows = k.focusRows;
+    const regAgg = A.regionAgg(compareRows);
+    const readinessVals = D.REGIONS.map(r => regAgg[r].count ? regAgg[r].avgReadiness : null).filter(v=>v!==null);
+    const lo = Math.min(...readinessVals), hi = Math.max(...readinessVals);
+    const regionLabel = STATE.region === A.REGION_ALL ? "경북 전체" : STATE.region;
+
+    const top = document.getElementById("s1-top");
+    clearNode(top);
+
+    /* ---- 1열: 지도 (핵심 차트, 전체 높이) ---- */
+    const mapP = A.panel({ title:"지역별 디지털교육 준비도", desc:"경상북도 시군별 평균 디지털교육 준비도 지수를 색상으로 비교" });
+    top.appendChild(mapP.root);
+    mapP.body.style.display = "flex"; mapP.body.style.flexDirection = "column"; mapP.body.style.gap = "6px";
+    const mapCanvas = document.createElement("div"); mapCanvas.style.flex = "1"; mapCanvas.style.minHeight = "0";
+    const legendHost = document.createElement("div");
+    mapP.body.appendChild(mapCanvas); mapP.body.appendChild(legendHost);
+    renderMapLegend(legendHost, lo, hi);
+    autoDraw(mapCanvas, () => renderMap(mapCanvas, regAgg, readinessVals));
+
+    /* ---- 2열: 등급 분포(좌, 도넛) + 인프라x활용도 산점도(우) 결합 패널 ---- */
+    const meanInfra = A.avg(focusRows, "infrastructure_index");
+    const meanUtil = A.avg(focusRows, "utilization_index");
+
+    /* ---- 2열: 인프라x활용도 (지도와 동일 높이, 열 전체) ---- */
+    const col2 = document.createElement("div"); col2.className = "col-stack";
+    top.appendChild(col2);
+
+    const comboP = A.panel({
+      title:"인프라 수준 × 활용도 수준",
+      desc:"좌측 " + regionLabel + " 준비도 등급 분포 · 점선은 " + regionLabel + " 평균 기준선, 점 색상은 준비도 등급",
+    });
+    comboP.body.classList.add("combo-row");
+
+    const donutBlock = document.createElement("div"); donutBlock.className = "combo-donut-block";
+    const donutSubtitle = document.createElement("div"); donutSubtitle.className = "combo-subtitle"; donutSubtitle.textContent = regionLabel + " 준비도 등급 분포";
+    const donutWrap = document.createElement("div"); donutWrap.className = "donut-wrap";
+    const donutCanvas = document.createElement("div"); donutCanvas.style.flex = "none"; donutCanvas.style.width = "104px"; donutCanvas.style.height = "104px";
+    const donutLegend = document.createElement("div"); donutLegend.className = "donut-legend";
+    donutWrap.appendChild(donutCanvas); donutWrap.appendChild(donutLegend);
+    donutBlock.appendChild(donutSubtitle); donutBlock.appendChild(donutWrap);
+
+    const scatterBlock = document.createElement("div"); scatterBlock.className = "combo-scatter-block";
+    comboP.body.appendChild(donutBlock);
+    comboP.body.appendChild(scatterBlock);
+
+    const heatShowAll = !(STATE.region === A.REGION_ALL && STATE.level === A.LEVEL_ALL);
+    const heatP = A.panel({
+      title:"학교별 취약지표 분포",
+      desc: heatShowAll
+        ? "선택 조건 해당 " + focusRows.length + "개교 전체 · 개선 우선순위 순"
+        : "개선 우선순위 상위 10개교 기준",
+    });
+    heatP.body.style.display = "flex"; heatP.body.style.flexDirection = "column"; heatP.body.style.gap = "6px";
+    const heatCanvas = document.createElement("div"); heatCanvas.style.flex = "1"; heatCanvas.style.minHeight = "0";
+    heatCanvas.style.overflowY = heatShowAll ? "auto" : "hidden"; heatCanvas.style.overflowX = "hidden";
+    const heatLegendHost = document.createElement("div");
+    heatP.body.appendChild(heatCanvas); heatP.body.appendChild(heatLegendHost);
+
+    // 패널을 DOM에 붙여 flex 배분이 확정된 뒤 차트를 렌더링해야
+    // container.clientWidth/Height가 최종 크기로 정확히 측정된다.
+    col2.appendChild(comboP.root);
+    renderGradeDonut(donutCanvas, donutLegend, focusRows);
+    autoDraw(scatterBlock, () => renderScatter(scatterBlock, focusRows, meanInfra, meanUtil));
+
+    /* ---- 하단: 학교별 취약지표 분포 (전체 폭) ---- */
+    const bottom = document.getElementById("s1-bottom");
+    clearNode(bottom);
+    bottom.appendChild(heatP.root);
+    renderHeatLegend(heatLegendHost);
+    autoDraw(heatCanvas, () => renderHeatmap(heatCanvas, focusRows, heatShowAll));
+  };
+})();
+</script>
+<script>
+/* ======================================================================
+   화면 3. 유사 학교군 유형 분석
+   ====================================================================== */
+(function(){
+  "use strict";
+  const A = window.APP, D = A.D, STATE = A.STATE;
+  const { el, text, fmt1, fmt0, clamp, scaleLinear, scaleBand,
+          showTooltip, hideTooltip, isDarkMode, cssVar, clearNode, autoDraw } = window.CH;
+
+  const CLUSTER_IDS = ["A","B","C","D"];
+  const CLUSTER_SHORT = { A:"준비 우수형", B:"인프라 취약형", C:"활용 취약형", D:"종합 취약형" };
+  const TYPE_META = {
+    A: { trait:"인프라와 활용도 모두 높은 학교", vuln:"뚜렷한 취약요인 없음", action:"현재 수준 유지 · 우수사례 확산 대상으로 활용" },
+    B: { trait:"디지털 활용도는 보통 이상이나 기기·네트워크 환경이 취약", vuln:"기기 노후화, 네트워크 대역폭 부족", action:"노후기기 교체 및 네트워크 증설 우선 검토" },
+    C: { trait:"인프라는 양호하지만 디지털서비스 및 교원 활용 수준이 낮음", vuln:"AI디지털교과서·원패스 저조, 연수 이수율 낮음", action:"교원 디지털 연수 확대, AIDT·원패스 활용 지원" },
+    D: { trait:"인프라 및 활용도 모두 낮음", vuln:"기기·네트워크·활용 지표 전반 취약", action:"집중 지원 대상 · 기기·네트워크·연수 패키지 지원 우선 검토" },
+  };
+  const RADAR_AXES = [
+    { key:"devices", label:"디지털기기" },
+    { key:"aging", label:"기기 최신성" },
+    { key:"network", label:"네트워크" },
+    { key:"aidt", label:"AI디지털교과서" },
+    { key:"onepass", label:"디지털 원패스" },
+    { key:"train", label:"교원 디지털 연수" },
+  ];
+
+  function buildScreenShell(){
+    const root = document.createElement("div");
+    root.className = "screen active"; root.id = "screen-2";
+    root.innerHTML = `
+      <div class="kpirow" id="s2-kpi"></div>
+      <div class="row r-55" id="s2-area1"></div>
+      <div class="row r-55" id="s2-area2"></div>
+    `;
+    document.getElementById("screens").appendChild(root);
+  }
+
+  function renderKPI(rows){
+    const wrap = document.getElementById("s2-kpi");
+    clearNode(wrap);
+    wrap.classList.add("type-cards");
+    const counts = { A:0,B:0,C:0,D:0 };
+    rows.forEach(r => counts[r.cluster_id]++);
+    CLUSTER_IDS.forEach(cid => {
+      const card = document.createElement("div");
+      card.className = "kpi" + (STATE.clusterType === cid ? " on" : "");
+      card.style.borderTopColor = cssVar(A.CLUSTER_COLOR_VAR[cid]);
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.innerHTML = `
+        <div class="klabel" style="color:${cssVar(A.CLUSTER_COLOR_VAR[cid])}">유형 ${cid} · ${CLUSTER_SHORT[cid]}</div>
+        <div class="kval">${counts[cid]}<span class="unit">개교</span></div>
+        <div class="ksub">${rows.length ? "전체 대비 " + fmt1(counts[cid]/rows.length*100) + "%" : "-"}</div>
+        <div class="ktrait">${TYPE_META[cid].trait}</div>
+      `;
+      card.addEventListener("click", () => selectCluster(cid));
+      card.addEventListener("keydown", (ev) => { if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); selectCluster(cid); } });
+      wrap.appendChild(card);
+    });
+  }
+
+  function selectCluster(cid){
+    STATE.clusterType = (STATE.clusterType === cid) ? A.CLUSTER_ALL : cid;
+    window.renderAll(); // 필터바의 '학교군 유형' select도 함께 동기화
+  }
+
+  /* ---------------- 좌: 클러스터 산점도 ---------------- */
+  function drawMarker(g, shape, cx, cy, size, fill, opacity, strokeSel){
+    const commonAttrs = { fill, opacity, stroke: strokeSel? "var(--text-primary)":"var(--bg-surface)", "stroke-width": strokeSel?1.6:1 };
+    let node;
+    if(shape === "circle"){ node = el("circle", Object.assign({cx,cy,r:size}, commonAttrs)); }
+    else if(shape === "square"){ node = el("rect", Object.assign({x:cx-size,y:cy-size,width:size*2,height:size*2,rx:0}, commonAttrs)); }
+    else if(shape === "triangle"){ const p=[[cx,cy-size*1.15],[cx-size*1.05,cy+size*0.85],[cx+size*1.05,cy+size*0.85]]; node = el("polygon", Object.assign({points:p.map(x=>x.join(",")).join(" ")}, commonAttrs)); }
+    else { const p=[[cx,cy-size*1.2],[cx+size*1.2,cy],[cx,cy+size*1.2],[cx-size*1.2,cy]]; node = el("polygon", Object.assign({points:p.map(x=>x.join(",")).join(" ")}, commonAttrs)); }
+    g.appendChild(node);
+    return node;
+  }
+
+  function renderClusterScatter(container, rows){
+    clearNode(container);
+    const w = container.clientWidth || 480, h = container.clientHeight || 300;
+    const m = { l:16, r:16, t:16, b:16 };
+    const plotW = w-m.l-m.r, plotH = h-m.t-m.b;
+    const ext = 3.2;
+    const x = scaleLinear([-ext,ext],[0,plotW]);
+    const y = scaleLinear([-ext,ext],[plotH,0]);
+    const svg = el("svg", { width:w, height:h, viewBox:`0 0 ${w} ${h}` });
+    const g = el("g", { transform:`translate(${m.l},${m.t})` });
+    g.appendChild(el("line", { x1:x(0),x2:x(0),y1:0,y2:plotH, stroke:"var(--grid)", "stroke-width":1 }));
+    g.appendChild(el("line", { x1:0,x2:plotW,y1:y(0),y2:y(0), stroke:"var(--grid)", "stroke-width":1 }));
+    g.appendChild(text(plotW-4, plotH-6, "분석 차원 1 →", { class:"axis-label", "text-anchor":"end" }));
+    const ylab = text(10, 12, "↑ 분석 차원 2", { class:"axis-label" });
+    g.appendChild(ylab);
+
+    rows.forEach(r => {
+      const cid = r.cluster_id;
+      const on = STATE.clusterType === A.CLUSTER_ALL || STATE.clusterType === cid;
+      const marker = drawMarker(g, A.CLUSTER_SHAPE[cid], x(r.dim1), y(r.dim2), 4, cssVar(A.CLUSTER_COLOR_VAR[cid]), on?0.82:0.14, false);
+      marker.style.cursor = "pointer";
+      marker.addEventListener("click", () => selectCluster(cid));
+      marker.addEventListener("mousemove", (ev) => showTooltip(ev.clientX, ev.clientY, `<b>${r.school_name}</b><div class="trow"><span class="tmuted">유형</span><span>${r.cluster_name}</span></div><div class="trow"><span class="tmuted">준비도</span><span>${fmt1(r.readiness_index)}</span></div>`));
+      marker.addEventListener("mouseleave", hideTooltip);
+    });
+    svg.appendChild(g);
+    container.appendChild(svg);
+  }
+
+  function renderClusterLegend(container){
+    clearNode(container);
+    const row = document.createElement("div"); row.className = "legend-line";
+    CLUSTER_IDS.forEach(cid => {
+      const it = document.createElement("span"); it.className = "legend-item"; it.style.cursor = "pointer";
+      it.style.opacity = (STATE.clusterType === A.CLUSTER_ALL || STATE.clusterType === cid) ? 1 : 0.4;
+      const shapeGlyph = { circle:"●", square:"■", triangle:"▲", diamond:"◆" }[A.CLUSTER_SHAPE[cid]];
+      it.innerHTML = `<span style="color:${cssVar(A.CLUSTER_COLOR_VAR[cid])}; font-size:11px;">${shapeGlyph}</span> 유형 ${cid} · ${CLUSTER_SHORT[cid]}`;
+      it.addEventListener("click", () => selectCluster(cid));
+      row.appendChild(it);
+    });
+    container.appendChild(row);
+  }
+
+  /* ---------------- 우: 유형별 지표 프로파일 ---------------- */
+  function clusterAvgSub(rows, cid){
+    const rs = cid ? rows.filter(r => r.cluster_id === cid) : rows;
+    const out = {};
+    RADAR_AXES.forEach(ax => { out[ax.key] = rs.length ? A.avg(rs.map(r=>({v:r._sub[ax.key]})), "v") : 0; });
+    return out;
+  }
+  function radarPoint(cx, cy, radius, idx, n, value){
+    const angle = -Math.PI/2 + idx * (2*Math.PI/n);
+    return [cx + Math.cos(angle)*radius*(value/100), cy + Math.sin(angle)*radius*(value/100)];
+  }
+  function renderProfileRadar(container, rows, cid){
+    clearNode(container);
+    const w = container.clientWidth || 260, h = container.clientHeight || 260;
+    const cx = w/2, cy = h/2-4, radius = Math.min(w,h)/2 - 32;
+    const n = RADAR_AXES.length;
+    const svg = el("svg", { width:w, height:h, viewBox:`0 0 ${w} ${h}` });
+    [0.25,0.5,0.75,1].forEach(t => {
+      const pts = RADAR_AXES.map((ax,i) => radarPoint(cx,cy,radius,i,n,t*100));
+      svg.appendChild(el("polygon", { points:pts.map(p=>p.join(",")).join(" "), fill:"none", stroke:"var(--grid)", "stroke-width":1 }));
+    });
+    RADAR_AXES.forEach((ax,i) => {
+      const p = radarPoint(cx,cy,radius,i,n,100);
+      svg.appendChild(el("line", { x1:cx,y1:cy,x2:p[0],y2:p[1], stroke:"var(--grid)", "stroke-width":1 }));
+      const lp = radarPoint(cx,cy,radius*1.24,i,n,100);
+      svg.appendChild(text(lp[0], lp[1], ax.label, { class:"axis-label", "text-anchor":"middle" }));
+    });
+    function poly(sub, colorVar, fillOpacity, sw){
+      const pts = RADAR_AXES.map((ax,i) => radarPoint(cx,cy,radius,i,n,sub[ax.key]));
+      svg.appendChild(el("polygon", { points:pts.map(p=>p.join(",")).join(" "), fill:cssVar(colorVar), "fill-opacity":fillOpacity, stroke:cssVar(colorVar), "stroke-width":sw }));
+      pts.forEach(pt => svg.appendChild(el("circle", { cx:pt[0], cy:pt[1], r:2.4, fill:cssVar(colorVar) })));
+    }
+    const overall = clusterAvgSub(rows, null);
+    if(cid){
+      poly(overall, "--text-muted", 0.06, 1.6);
+      poly(clusterAvgSub(rows, cid), A.CLUSTER_COLOR_VAR[cid], 0.24, 2.2);
+    } else {
+      CLUSTER_IDS.forEach(c => poly(clusterAvgSub(rows,c), A.CLUSTER_COLOR_VAR[c], 0.05, 1.8));
+    }
+    container.appendChild(svg);
+  }
+  function renderProfileGroupedBar(container, rows){
+    clearNode(container);
+    const w = container.clientWidth || 480, h = container.clientHeight || 260;
+    const m = { l:78, r:14, t:8, b:20 };
+    const plotW = w-m.l-m.r, plotH = h-m.t-m.b;
+    const y = scaleBand(RADAR_AXES.map(a=>a.key), [0,plotH], 0.32);
+    const x = scaleLinear([0,100],[0,plotW]);
+    const svg = el("svg", { width:w, height:h, viewBox:`0 0 ${w} ${h}` });
+    const g = el("g", { transform:`translate(${m.l},${m.t})` });
+    [0,25,50,75,100].forEach(t => g.appendChild(el("line", { x1:x(t),x2:x(t),y1:0,y2:plotH, class:"grid-line" })));
+    RADAR_AXES.forEach(ax => {
+      const yy = y.pos(ax.key), bh = y.bandwidth/4;
+      g.appendChild(text(-6, yy+bh*2+3, ax.label, { class:"axis-label", "text-anchor":"end" }));
+      CLUSTER_IDS.forEach((cid,ci) => {
+        const val = clusterAvgSub(rows, cid)[ax.key];
+        const barY = yy + ci*bh;
+        g.appendChild(el("rect", { x:0, y:barY, width:Math.max(1,x(val)), height:bh-1.4, fill:cssVar(A.CLUSTER_COLOR_VAR[cid]), rx:0 }));
+      });
+    });
+    svg.appendChild(g);
+    container.appendChild(svg);
+  }
+
+  /* ---------------- 좌하: 지역별 학교군 구성 ---------------- */
+  function renderRegionComposition(container, rows){
+    clearNode(container);
+    const w = container.clientWidth || 500, h = container.clientHeight || 230;
+    const m = { l:32, r:8, t:6, b:30 };
+    const plotW = w-m.l-m.r, plotH = h-m.t-m.b;
+    const byRegion = {};
+    D.REGIONS.forEach(r => byRegion[r] = { A:0,B:0,C:0,D:0, total:0 });
+    const schoolsBy = {};
+    rows.forEach(r => {
+      byRegion[r.region][r.cluster_id]++; byRegion[r.region].total++;
+      const k = r.region + "|" + r.cluster_id;
+      (schoolsBy[k] = schoolsBy[k] || []).push(r);
+    });
+    const names = D.REGIONS.filter(r => byRegion[r].total > 0);
+    const x = scaleBand(names, [0,plotW], 0.34);
+    const y = scaleLinear([0,100],[plotH,0]);
+    const svg = el("svg", { width:w, height:h, viewBox:`0 0 ${w} ${h}` });
+    const g = el("g", { transform:`translate(${m.l},${m.t})` });
+    [0,50,100].forEach(t => { g.appendChild(el("line", { x1:0,x2:plotW,y1:y(t),y2:y(t), class:"grid-line" })); g.appendChild(text(-6,y(t)+3,t+"%", { class:"axis-label","text-anchor":"end" })); });
+    names.forEach(rg => {
+      const info = byRegion[rg], total = info.total || 1;
+      let cum = 0;
+      const bx = x.pos(rg), bw = x.bandwidth;
+      CLUSTER_IDS.forEach(cid => {
+        const pct = info[cid]/total*100;
+        const y0 = y(cum), y1 = y(cum+pct);
+        const on = STATE.clusterType === A.CLUSTER_ALL || STATE.clusterType === cid;
+        const rect = el("rect", { x:bx, y:y1, width:bw, height:Math.max(0,y0-y1), fill:cssVar(A.CLUSTER_COLOR_VAR[cid]), opacity: on?0.9:0.15 });
+        rect.style.cursor="pointer";
+        rect.addEventListener("click", () => selectCluster(cid));
+        const list = (schoolsBy[rg + "|" + cid] || []).slice().sort((a,b)=>b.readiness_index-a.readiness_index);
+        const namesHtml = list.length
+          ? list.slice(0,12).map(s => `<div class="trow"><span>${s.school_name}</span><span class="tmuted">${fmt1(s.readiness_index)}</span></div>`).join("")
+            + (list.length > 12 ? `<div class="trow tmuted">외 ${list.length-12}개교</div>` : "")
+          : "";
+        rect.addEventListener("mousemove", (ev) => showTooltip(ev.clientX, ev.clientY,
+          `<b>${rg}</b><div class="trow"><span class="tmuted">${CLUSTER_SHORT[cid]}</span><span>${info[cid]}개교 (${fmt1(pct)}%)</span></div>`
+          + (namesHtml ? `<div style="margin-top:4px; padding-top:4px; border-top:1px solid var(--border)">${namesHtml}</div>` : "")
+        ));
+        rect.addEventListener("mouseleave", hideTooltip);
+        g.appendChild(rect);
+        cum += pct;
+      });
+      g.appendChild(text(bx+bw/2, plotH+11, rg, { class:"axis-label","text-anchor":"middle", "font-size":8.2 }));
+    });
+    svg.appendChild(g);
+    container.appendChild(svg);
+  }
+
+  /* ---------------- 우하: 유형 카드 ---------------- */
+  function renderTypeCards(container, rows){
+    clearNode(container);
+    const grid = document.createElement("div"); grid.className = "type-card-grid";
+    const counts = { A:0,B:0,C:0,D:0 };
+    rows.forEach(r => counts[r.cluster_id]++);
+    const toneVar = { A:"--good", B:"--warn", C:"--warn", D:"--crit" };
+    CLUSTER_IDS.forEach(cid => {
+      const meta = TYPE_META[cid];
+      const card = document.createElement("div");
+      card.className = "type-card" + (STATE.clusterType === cid ? " on" : "");
+      card.style.borderTopColor = cssVar(toneVar[cid]);
+      card.innerHTML = `
+        <div class="tc-head">
+          <span class="tc-name" style="color:${cssVar(A.CLUSTER_COLOR_VAR[cid])}">유형 ${cid} · ${CLUSTER_SHORT[cid]}</span>
+          <span class="tc-count">${counts[cid]}개교</span>
+        </div>
+        <div class="tc-row"><span class="k">특성</span><span>${meta.trait}</span></div>
+        <div class="tc-row"><span class="k">취약요인</span><span>${meta.vuln}</span></div>
+        <div class="tc-row"><span class="k">개선방향</span><span>${meta.action}</span></div>
+      `;
+      card.style.cursor = "pointer";
+      card.addEventListener("click", () => selectCluster(cid));
+      grid.appendChild(card);
+    });
+    container.appendChild(grid);
+  }
+
+  /* ---------------- assemble ---------------- */
+  window.renderScreen2 = function renderScreen2(){
+    if(!document.getElementById("screen-2")) buildScreenShell();
+    // 화면3 필터에는 시군 선택이 없으므로(기준연도·학교급·학교군 유형만) 지역 필터는 무시하고 항상 경북 전체 기준으로 분석한다
+    const rows = A.baseRows({respectRegion:false});
+    renderKPI(rows);
+
+    const compareRows = A.baseRows({respectRegion:false});
+
+    const area1 = document.getElementById("s2-area1");
+    clearNode(area1);
+    const scatterP = A.panel({ title:"학교군 분포", desc:"디지털교육 인프라·활용 특성 기반 2차원 축소 결과 (예시) · 점 클릭 시 유형 선택" });
+    area1.appendChild(scatterP.root);
+    scatterP.body.style.display="flex"; scatterP.body.style.flexDirection="column"; scatterP.body.style.gap="4px";
+    const scCanvas = document.createElement("div"); scCanvas.style.flex="1"; scCanvas.style.minHeight="0";
+    const scLegend = document.createElement("div");
+    scatterP.body.appendChild(scCanvas); scatterP.body.appendChild(scLegend);
+    renderClusterLegend(scLegend);
+    autoDraw(scCanvas, () => renderClusterScatter(scCanvas, rows));
+
+    const profP = A.panel({ title:"유형별 지표 프로파일", desc: STATE.clusterType===A.CLUSTER_ALL ? "학교군별 평균 세부지표 비교 (4개 유형)" : "선택 유형 vs 경북 전체 평균" });
+    area1.appendChild(profP.root);
+    autoDraw(profP.body, () => {
+      if(STATE.clusterType === A.CLUSTER_ALL){ renderProfileGroupedBar(profP.body, rows); }
+      else { renderProfileRadar(profP.body, rows, STATE.clusterType); }
+    });
+
+    const area2 = document.getElementById("s2-area2");
+    clearNode(area2);
+    const compP = A.panel({ title:"지역별 학교군 구성", desc:"시군별 4개 학교군 유형 구성비 (100% 누적)" });
+    area2.appendChild(compP.root);
+    autoDraw(compP.body, () => renderRegionComposition(compP.body, compareRows));
+
+  };
+})();
+</script>
+<script>
+(function(){
+  "use strict";
+  function init(){ window.renderAll(); }
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+  let rAF = null;
+  function scheduleRerender(){
+    if(rAF) cancelAnimationFrame(rAF);
+    rAF = requestAnimationFrame(function(){ window.renderAll(); });
+  }
+  window.addEventListener("resize", scheduleRerender);
+  // 차트는 SVG에 색상을 고정값으로 굽기 때문에, 시스템 다크모드 전환이나
+  // 뷰어의 명시적 테마 토글(data-theme 속성 변경) 시에도 다시 그려줘야 한다.
+  if(window.matchMedia){
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if(mq.addEventListener) mq.addEventListener("change", scheduleRerender);
+    else if(mq.addListener) mq.addListener(scheduleRerender);
+  }
+  const themeObserver = new MutationObserver(scheduleRerender);
+  themeObserver.observe(document.documentElement, { attributes:true, attributeFilter:["data-theme"] });
+})();
+</script>
