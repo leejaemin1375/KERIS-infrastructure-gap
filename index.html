@@ -866,7 +866,9 @@ window.GB_MAP_DATA = {"width":520,"height":314.0,"paths":{"포항":"M 204.84,239
   function autoDraw(container, draw){
     draw();
     if(container.__omRO){ container.__omRO.disconnect(); }
-    let last = container.clientWidth + "x" + container.clientHeight;
+    // 최초 draw 시점의 측정값은 형제 요소가 아직 붙지 않아 stale할 수 있으므로
+    // 기준값(last)을 잡지 않고, 레이아웃이 확정된 다음 프레임에 한 번 더 그린다.
+    let last = null;
     const ro = new ResizeObserver(function(){
       const cur = container.clientWidth + "x" + container.clientHeight;
       if(cur !== last && container.clientWidth > 0 && container.clientHeight > 0){
@@ -875,6 +877,12 @@ window.GB_MAP_DATA = {"width":520,"height":314.0,"paths":{"포항":"M 204.84,239
     });
     ro.observe(container);
     container.__omRO = ro;
+    requestAnimationFrame(function(){
+      const cur = container.clientWidth + "x" + container.clientHeight;
+      if(cur !== last && container.clientWidth > 0 && container.clientHeight > 0){
+        last = cur; draw();
+      }
+    });
   }
 
   global.CH = {
@@ -1575,12 +1583,17 @@ window.GB_MAP_DATA = {"width":520,"height":314.0,"paths":{"포항":"M 204.84,239
     D: { trait:"인프라 및 활용도 모두 낮음", vuln:"기기·네트워크·활용 지표 전반 취약", action:"집중 지원 대상 · 기기·네트워크·연수 패키지 지원 우선 검토" },
   };
   const RADAR_AXES = [
-    { key:"devices", label:"디지털기기" },
+    { key:"devices", label:"디지털기기 보급률" },
     { key:"aging", label:"기기 최신성" },
-    { key:"network", label:"네트워크" },
-    { key:"aidt", label:"AI디지털교과서" },
-    { key:"onepass", label:"디지털 원패스" },
-    { key:"train", label:"교원 디지털 연수" },
+    { key:"network", label:"네트워크 속도" },
+    { key:"aidt", label:"AI디지털교과서 채택률" },
+    { key:"onepass", label:"디지털 원패스 가입률" },
+    { key:"train", label:"디지털 연수 이수율" },
+  ];
+  // 지표를 인프라 3종 / 활용 3종으로 나눠 두 개의 차트로 표시한다
+  const AXIS_GROUPS = [
+    { title:"인프라 영역", axes: RADAR_AXES.slice(0,3) },
+    { title:"활용 영역", axes: RADAR_AXES.slice(3) },
   ];
 
   function buildScreenShell(){
@@ -1689,53 +1702,69 @@ window.GB_MAP_DATA = {"width":520,"height":314.0,"paths":{"포항":"M 204.84,239
     const angle = -Math.PI/2 + idx * (2*Math.PI/n);
     return [cx + Math.cos(angle)*radius*(value/100), cy + Math.sin(angle)*radius*(value/100)];
   }
-  function renderProfileRadar(container, rows, cid){
+  function renderProfileRadar(container, rows, cid, axes){
+    axes = axes || RADAR_AXES;
     clearNode(container);
     const w = container.clientWidth || 260, h = container.clientHeight || 260;
-    const cx = w/2, cy = h/2-4, radius = Math.min(w,h)/2 - 32;
-    const n = RADAR_AXES.length;
+    const cx = w/2, cy = h/2-2, radius = Math.min(w,h)/2 - 40;
+    const n = axes.length;
     const svg = el("svg", { width:w, height:h, viewBox:`0 0 ${w} ${h}` });
     [0.25,0.5,0.75,1].forEach(t => {
-      const pts = RADAR_AXES.map((ax,i) => radarPoint(cx,cy,radius,i,n,t*100));
+      const pts = axes.map((ax,i) => radarPoint(cx,cy,radius,i,n,t*100));
       svg.appendChild(el("polygon", { points:pts.map(p=>p.join(",")).join(" "), fill:"none", stroke:"var(--grid)", "stroke-width":1 }));
     });
-    RADAR_AXES.forEach((ax,i) => {
+    axes.forEach((ax,i) => {
       const p = radarPoint(cx,cy,radius,i,n,100);
       svg.appendChild(el("line", { x1:cx,y1:cy,x2:p[0],y2:p[1], stroke:"var(--grid)", "stroke-width":1 }));
-      const lp = radarPoint(cx,cy,radius*1.24,i,n,100);
+      const lp = radarPoint(cx,cy,radius*1.3,i,n,100);
       svg.appendChild(text(lp[0], lp[1], ax.label, { class:"axis-label", "text-anchor":"middle" }));
     });
-    function poly(sub, colorVar, fillOpacity, sw){
-      const pts = RADAR_AXES.map((ax,i) => radarPoint(cx,cy,radius,i,n,sub[ax.key]));
+    function poly(sub, colorVar, fillOpacity, sw, showLabels){
+      const pts = axes.map((ax,i) => radarPoint(cx,cy,radius,i,n,sub[ax.key]));
       svg.appendChild(el("polygon", { points:pts.map(p=>p.join(",")).join(" "), fill:cssVar(colorVar), "fill-opacity":fillOpacity, stroke:cssVar(colorVar), "stroke-width":sw }));
       pts.forEach(pt => svg.appendChild(el("circle", { cx:pt[0], cy:pt[1], r:2.4, fill:cssVar(colorVar) })));
+      if(showLabels){
+        axes.forEach((ax,i) => {
+          const pt = pts[i];
+          svg.appendChild(text(pt[0] + (pt[0] >= cx ? 7 : -7), pt[1] + (pt[1] < cy ? -5 : 11), fmt1(sub[ax.key]), {
+            "text-anchor": pt[0] >= cx ? "start" : "end", "font-size":10.5, "font-weight":700,
+            fill: cssVar(colorVar), style:"pointer-events:none;",
+          }));
+        });
+      }
     }
     const overall = clusterAvgSub(rows, null);
     if(cid){
-      poly(overall, "--text-muted", 0.06, 1.6);
-      poly(clusterAvgSub(rows, cid), A.CLUSTER_COLOR_VAR[cid], 0.24, 2.2);
+      poly(overall, "--text-muted", 0.06, 1.6, false);
+      poly(clusterAvgSub(rows, cid), A.CLUSTER_COLOR_VAR[cid], 0.24, 2.2, true);
     } else {
       CLUSTER_IDS.forEach(c => poly(clusterAvgSub(rows,c), A.CLUSTER_COLOR_VAR[c], 0.05, 1.8));
     }
     container.appendChild(svg);
   }
-  function renderProfileGroupedBar(container, rows){
+  function renderProfileGroupedBar(container, rows, axes){
+    axes = axes || RADAR_AXES;
     clearNode(container);
     const w = container.clientWidth || 480, h = container.clientHeight || 260;
-    const m = { l:78, r:14, t:8, b:20 };
+    const m = { l:108, r:36, t:8, b:8 };
     const plotW = w-m.l-m.r, plotH = h-m.t-m.b;
-    const y = scaleBand(RADAR_AXES.map(a=>a.key), [0,plotH], 0.32);
+    const y = scaleBand(axes.map(a=>a.key), [0,plotH], 0.32);
     const x = scaleLinear([0,100],[0,plotW]);
     const svg = el("svg", { width:w, height:h, viewBox:`0 0 ${w} ${h}` });
     const g = el("g", { transform:`translate(${m.l},${m.t})` });
-    [0,25,50,75,100].forEach(t => g.appendChild(el("line", { x1:x(t),x2:x(t),y1:0,y2:plotH, class:"grid-line" })));
-    RADAR_AXES.forEach(ax => {
+    axes.forEach(ax => {
       const yy = y.pos(ax.key), bh = y.bandwidth/4;
-      g.appendChild(text(-6, yy+bh*2+3, ax.label, { class:"axis-label", "text-anchor":"end" }));
+      g.appendChild(text(-5, yy+bh*2+3, ax.label, { class:"axis-label", "text-anchor":"end", "font-size":11 }));
       CLUSTER_IDS.forEach((cid,ci) => {
         const val = clusterAvgSub(rows, cid)[ax.key];
         const barY = yy + ci*bh;
-        g.appendChild(el("rect", { x:0, y:barY, width:Math.max(1,x(val)), height:bh-1.4, fill:cssVar(A.CLUSTER_COLOR_VAR[cid]), rx:0 }));
+        const bw = Math.max(1, x(val));
+        g.appendChild(el("rect", { x:0, y:barY, width:bw, height:bh-1.4, fill:cssVar(A.CLUSTER_COLOR_VAR[cid]), rx:0 }));
+        const inside = bw > 34;
+        g.appendChild(text(inside ? bw - 4 : bw + 4, barY + (bh-1.4)/2 + 3.2, fmt1(val), {
+          "text-anchor": inside ? "end" : "start", "font-size":10.5, "font-weight":700,
+          fill: inside ? "#fff" : "var(--text-secondary)", style:"pointer-events:none;",
+        }));
       });
     });
     svg.appendChild(g);
@@ -1842,9 +1871,25 @@ window.GB_MAP_DATA = {"width":520,"height":314.0,"paths":{"포항":"M 204.84,239
 
     const profP = A.panel({ title:"유형별 지표 프로파일", desc: STATE.clusterType===A.CLUSTER_ALL ? "학교군별 평균 세부지표 비교 (4개 유형)" : "선택 유형 vs 경북 전체 평균" });
     area1.appendChild(profP.root);
-    autoDraw(profP.body, () => {
-      if(STATE.clusterType === A.CLUSTER_ALL){ renderProfileGroupedBar(profP.body, rows); }
-      else { renderProfileRadar(profP.body, rows, STATE.clusterType); }
+    profP.body.style.display = "flex"; profP.body.style.gap = "14px";
+    const profileCanvases = [];
+    AXIS_GROUPS.forEach((grp, gi) => {
+      const cell = document.createElement("div");
+      cell.style.cssText = "flex:1; min-width:0; min-height:0; display:flex; flex-direction:column; gap:4px;";
+      void gi;
+      const cap = document.createElement("div");
+      cap.className = "combo-subtitle"; cap.style.textAlign = "left"; cap.textContent = grp.title;
+      const canvas = document.createElement("div");
+      canvas.style.cssText = "flex:1; min-height:0; position:relative;";
+      cell.appendChild(cap); cell.appendChild(canvas);
+      profP.body.appendChild(cell);
+      profileCanvases.push({ canvas, grp });
+    });
+    profileCanvases.forEach(({ canvas, grp }) => {
+      autoDraw(canvas, () => {
+        if(STATE.clusterType === A.CLUSTER_ALL){ renderProfileGroupedBar(canvas, rows, grp.axes); }
+        else { renderProfileRadar(canvas, rows, STATE.clusterType, grp.axes); }
+      });
     });
 
     const area2 = document.getElementById("s2-area2");
