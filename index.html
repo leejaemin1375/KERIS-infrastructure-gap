@@ -1872,6 +1872,10 @@ window.GB_MAP_DATA = {"width":520,"height":314.0,"paths":{"포항":"M 204.84,239
     const profP = A.panel({ title:"유형별 지표 프로파일", desc: STATE.clusterType===A.CLUSTER_ALL ? "학교군별 평균 세부지표 비교 (4개 유형)" : "선택 유형 vs 경북 전체 평균" });
     area1.appendChild(profP.root);
     profP.body.style.display = "flex"; profP.body.style.gap = "14px";
+    if(STATE.clusterType !== A.CLUSTER_ALL){
+      // 유형 선택 시에는 6개 지표를 하나의 레이더로 표시 (분리하지 않음)
+      autoDraw(profP.body, () => renderProfileRadar(profP.body, rows, STATE.clusterType, RADAR_AXES));
+    } else {
     const profileCanvases = [];
     AXIS_GROUPS.forEach((grp, gi) => {
       const cell = document.createElement("div");
@@ -1886,11 +1890,9 @@ window.GB_MAP_DATA = {"width":520,"height":314.0,"paths":{"포항":"M 204.84,239
       profileCanvases.push({ canvas, grp });
     });
     profileCanvases.forEach(({ canvas, grp }) => {
-      autoDraw(canvas, () => {
-        if(STATE.clusterType === A.CLUSTER_ALL){ renderProfileGroupedBar(canvas, rows, grp.axes); }
-        else { renderProfileRadar(canvas, rows, STATE.clusterType, grp.axes); }
-      });
+      autoDraw(canvas, () => renderProfileGroupedBar(canvas, rows, grp.axes));
     });
+    }
 
     const area2 = document.getElementById("s2-area2");
     clearNode(area2);
